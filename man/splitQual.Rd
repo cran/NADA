@@ -35,7 +35,7 @@
 \references{
 
     Lee and Helsel (in press), Statistical analysis of environmental data
-    containing multiple detection limits: S-language software for linear
+    containing multiple detection limits: S-language software for
     regression on order statistics, Computers in Geoscience vol. X, pp. X-X
 } 
 \author{

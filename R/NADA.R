@@ -1,7 +1,7 @@
 ###
 # NADA for R and S-PLUS by Lopaka Lee.
 #
-# Version 1.0-1
+# Version 1.0-2
 # Copyright (2004) Lopaka Lee
 #
 # A S-language software module based on 
@@ -21,10 +21,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 ###
 
-# lros -- Linear Regression on Order Statistics (LROS).
-# An implementation of LROS for left-censored data (less-thans) 
+# ros -- Regression on Order Statistics (ROS).
+# An implementation of ROS for left-censored data (less-thans) 
 # containing one to multiple censoring thresholds. See man page.
-lros = 
+ros = 
 function(obs, 
          censored, 
          forwardT = "log", 
@@ -54,7 +54,7 @@ function(obs,
     obs.transformed = get(forwardT)(obs[!censored])
     hc = lm(obs.transformed ~ pp.nq)
 
-    oldClass(hc) = c("lros", "lm")
+    oldClass(hc) = c("ros", "lm")
     hc$obs      = obs
     hc$modeled  = obs 
     hc$pp       = pp
@@ -62,13 +62,20 @@ function(obs,
     hc$reverseT = reverseT
     hc$forwardT = forwardT
 
-    hc$modeled[censored] = predict.lros(hc, qnorm(pp[censored]))
+    hc$modeled[censored] = predict.ros(hc, qnorm(pp[censored]))
 
     return(hc)
 }
 
-#  .trueT is provided so that lros() can be used with no transforms.
-#  (It is a quick hack -- rather than recoding lros and family)
+# ROS is technically "Linear Regression on Order Statistics" 
+# or LROS.  Version 1.0-1 had funtions and objects as "lros".  
+# As of Version 1.0-2, I've renamed things to "ros" to keep consistent
+# with the literature on this method which calls it just ROS.
+# This is provided for backward compatibility.
+lros = ros
+
+#  .trueT is provided so that ros() can be used with no transforms.
+#  (It is a quick hack -- rather than recoding ros and family)
 .trueT =
 function(x)
 {
@@ -76,7 +83,7 @@ function(x)
 }
 
 
-## Generic methods for lros objects
+## Generic methods for ros objects
 
 ###
 # Here we make some S3 generics that don't usually exist.
@@ -84,7 +91,18 @@ function(x)
 # This shuts up the warning we get for masking functions in the base package
 .conflicts.OK = 1
 #
-# sd() as a S3 generic -- see sd.lros below 
+# abline() as a S3 generic -- see abline.ros below 
+#   Note that abline is in graphics:: in R > 1.9.x
+abline.default =
+    if (exists("abline", where = NULL, inherits = FALSE, mode = "function"))
+        base::abline else graphics::abline
+
+abline = 
+function (a = NULL, b = NULL, h = NULL, v = NULL, reg = NULL,
+          coef = NULL, ...) UseMethod("abline")
+
+
+# sd() as a S3 generic -- see sd.ros below 
 #   Note that sd is in stats:: in R > 1.9.x
 sd.default = 
     if (exists("sd", where = NULL, inherits = FALSE, mode = "function"))
@@ -92,7 +110,7 @@ sd.default =
 
 sd = function(x, na.rm) UseMethod("sd")
 #
-# median() as a S3 generic -- see median.lros below
+# median() as a S3 generic -- see median.ros below
 #   Note that median is in stats:: in R > 1.9.x
 median.default = 
     if (exists("sd", where = NULL, inherits = FALSE, mode = "function"))
@@ -104,10 +122,10 @@ median = function(x, na.rm) UseMethod("median")
 #
 ###
 
-print.lros =
+print.ros =
 function(x, ...)
 {
-    cat("\nMultiply-Censored LROS Model\n\n")
+    cat("\nMultiply-Censored ROS Model\n\n")
 
     uncen.n = length(x$modeled[!x$censored])
     cen.n   = length(x$modeled[x$censored])
@@ -117,8 +135,8 @@ function(x, ...)
     cat("  % Censored:", format((cen.n/(cen.n+uncen.n))*100, digits=4), "\n")
     cat("\n");
     
-    cat("        Mean:", format(mean.lros(x), digits=4), "\n")
-    cat("      StdDev:", format(sd.lros(x), digits=4), "\n")
+    cat("        Mean:", format(mean.ros(x), digits=4), "\n")
+    cat("      StdDev:", format(sd.ros(x), digits=4), "\n")
     cat("\n");
     cat("   Quantiles:\n")
     print(quantile(x))
@@ -126,55 +144,56 @@ function(x, ...)
     cat("Use summary() to view the linear regression model\n\n")
 }
 
-summary.lros =
+summary.ros =
 function(object, plot=FALSE, ...)
 {
-    print(summary.lm(object))
+    ret = summary.lm(object)
     if (plot)
       {
         oldClass(object) = "lm"
         plot.lm(object)
       }
+    return(ret)
 }
 
 # as.data.frame conversion discards all linear model info
-as.data.frame.lros =
+as.data.frame.ros =
 function (x, row.names = NULL, optional = FALSE)
 {
     x = list(obs=x$obs, censored=x$censored, pp=x$pp, modeled=x$modeled)
     as.data.frame(x, row.names, optional)
 }
 
-mean.lros =
+mean.ros =
 function(x, ...)
 {
     mean(x$modeled, ...)
 }
 
-sd.lros =
+sd.ros =
 function(x, na.rm=FALSE)
 {
     sqrt(var(x$modeled, na.rm = na.rm))
 }
 
 
-median.lros =
+median.ros =
 function(x, na.rm=FALSE)
 {
     median(x$modeled, na.rm)
 }
 
-## Query and prediction functions for LROS objects
+## Query and prediction functions for ROS objects
 
-quantile.lros =
+quantile.ros =
 function(x, probs=c(0.05,0.10,0.25,0.50,0.75,0.90,0.95),...)
 {
     quantile(x$modeled, probs, ...)
 }
 
-# predict.lros -- given new normal quantiles of plotting positions,
+# predict.ros -- given new normal quantiles of plotting positions,
 # returns the corresponding modeled values.
-predict.lros =
+predict.ros =
 function(object, newdata, ...)
 {
     predicted = 
@@ -185,17 +204,19 @@ function(object, newdata, ...)
 
 ## Generic plotting functions
 
-# Adds the line from a LROS model to an existing LROS prob-plot.
-abline.lros =
-function (a, ...)
+# Adds the line from a ROS model to an existing ROS prob-plot.
+abline.ros =
+function (a = NULL, ...)
+
+
 {
     # We can't delegate this to the default abline because of transformations.
     minmax.nq = qnorm(c(min(a$pp), max(a$pp)))
-    lines(x=minmax.nq, y=predict.lros(a, minmax.nq), ...)
+    lines(x=minmax.nq, y=predict.ros(a, minmax.nq), ...)
 }
 
-# Constructs a prob-plot representation of a LROS model
-plot.lros =
+# Constructs a prob-plot representation of a ROS model
+plot.ros =
 function(x, 
          plot.censored = FALSE, 
          lm.line = TRUE, 
@@ -252,7 +273,7 @@ function(x,
     # Draw a line through the predicted xmin and xmax points 
     if (lm.line)
       {
-        abline.lros(x) 
+        abline.ros(x) 
       }
 
     # Draw top "Chance of Exceedance" axis
@@ -267,8 +288,8 @@ function(x,
     # Draw in grid at major divisions  -- if requested
     if (grid)
       {
-        abline(v=atv, lty="dotted")
-        abline(h=axTicks(2), lty="dotted")
+        abline.default(v=atv, lty="dotted")
+        abline.default(h=axTicks(2), lty="dotted")
       }
 }
 
@@ -277,18 +298,23 @@ function(x,
 
 # hc.ppoints calculates computes Wiebull-type plotting postions of data
 # containing mixed uncensored and left-censored data. See man page.
+# If there are no censored values, the plotting postitions are calculated
+# using the standard ppoints() function.
 hc.ppoints = 
 function(obs, censored)
 {
     pp = numeric(length(obs))
 
-    uncen = obs[!censored]
-    cen   = obs[censored]
+    if (!any(censored)) pp = ppoints(obs)
+    else
+      {
+        uncen = obs[!censored]
+        cen   = obs[censored]
 
-    cn = .cohnN(uncen, cen)
-
-    pp[!censored] = hc.ppoints.uncen(cn=cn)
-    pp[censored]  = hc.ppoints.cen(cn=cn)
+        cn = .cohnN(uncen, cen)
+        pp[!censored] = hc.ppoints.uncen(cn=cn)
+        pp[censored]  = hc.ppoints.cen(cn=cn)
+      }
 
     return(pp)
 }
@@ -409,3 +435,9 @@ function(v, qual.symbol = "<")
                 unqual.index = unqual.index))
 }
 
+## pct.censored  -- Simple function to save some typing
+pct.censored =
+function(obs, censored)
+{
+    return(100*(length(obs[censored])/length(obs)))
+}

@@ -1,41 +1,41 @@
-\name{predict.lros} 
+\name{predict.ros} 
 
-\alias{predict.lros} 
-\alias{quantile.lros} 
+\alias{predict.ros} 
+\alias{quantile.ros} 
 
-\alias{mean.lros}
+\alias{mean.ros}
 \alias{median}
 \alias{median.default}
-\alias{median.lros}
+\alias{median.ros}
 \alias{sd}
 \alias{sd.default}
-\alias{sd.lros}
+\alias{sd.ros}
 
-\title{Query and Prediction with LROS models} 
+\title{Query and Prediction with ROS models} 
 \description{
-    Functions that perform query and/or prediction with Linear Regression
-    on Order Statistics (\code{\link{lros}}) objects.
+    Functions that perform query and/or prediction with Regression
+    on Order Statistics (\code{\link{ros}}) objects.
 
-    \code{mean} returns the modeled mean of a LROS model.
-    \code{median} returns the modeled median of a LROS model.
-    \code{sd} returns the modeled standard deviation of a LROS model.
+    \code{mean} returns the modeled mean of a ROS model.
+    \code{median} returns the modeled median of a ROS model.
+    \code{sd} returns the modeled standard deviation of a ROS model.
  
     \code{quantile} produces sample quantiles corresponding to
     the given probabilities. The smallest observation corresponds to a
     probability of 0 and the largest to a probability of 1.
 
-    \code{predict} Predicted values based on a LROS model object.
+    \code{predict} Predicted values based on a ROS model object.
 } 
 \usage{
-    \method{mean}{lros}(x, ...)
-    \method{median}{lros}(x, na.rm=FALSE)
-    \method{sd}{lros}(x, na.rm=FALSE)
-    \method{quantile}{lros}(x, probs=c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95), ...)
-    \method{predict}{lros}(object, newdata, ...)
+    \method{mean}{ros}(x, ...)
+    \method{median}{ros}(x, na.rm=FALSE)
+    \method{sd}{ros}(x, na.rm=FALSE)
+    \method{quantile}{ros}(x, probs=c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95), ...)
+    \method{predict}{ros}(object, newdata, ...)
 }
 \arguments{
     \item{x, object}{
-        A LROS model constructed using \code{\link{lros}}
+        A ROS model constructed using \code{\link{ros}}
     }
     \item{na.rm}{
         logical. Should missing values be removed?
@@ -59,11 +59,11 @@
 \references{
 
     Lee and Helsel (in press) Statistical analysis of environmental data
-    containing multiple detection limits: S-language software for linear
+    containing multiple detection limits: S-language software for 
     regression on order statistics, Computers in Geoscience vol. X, pp. X-X
 
     Lee and Helsel (in press) Baseline models of trace elements in
-    drinking water of the United States. Applied Geochemistry vol. X, pp. X-X.
+    major aquifers of the United States. Applied Geochemistry vol. X, pp. X-X.
 
     Dennis R. Helsel (2004), Nondetects And Data Analasis:
     John Wiley and Sons, New York.
@@ -80,7 +80,7 @@
     Lopaka(Rob) Lee <rclee@usgs.gov>
 } 
 \seealso{
-    \code{\link{lros}}
+    \code{\link{ros}}
     \code{\link{hc.ppoints}}
 }
 \note{
@@ -92,13 +92,13 @@
     obs      = c(0.5,    0.5,   1.0,  1.5,   5.0,    10,   100)
     censored = c(TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE)
 
-    mylros = lros(obs, censored) 
+    myros = ros(obs, censored) 
 
-    mean(mylros)
-    median(mylros) 
-    sd(mylros)
+    mean(myros)
+    median(myros) 
+    sd(myros)
  
-    quantile(mylros, probs=c(0.90, 0.95))
-    predict(mylros, 1.5)
+    quantile(myros, probs=c(0.90, 0.95))
+    predict(myros, 1.5)
 } 
 \keyword{regression} 

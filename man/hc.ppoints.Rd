@@ -31,8 +31,13 @@
     containing mixed uncensored and censored data.  The formula was first
     described by Hirsch and Stedinger (1897) and latter reformulated by
     Helsel and Cohn (1988).  It assumes that censoring is left-censoring
-    (less-thans).  A detailed discussion of the formulation is in Lee and
-    Helsel (in press).
+    (less-thans).  A detailed discussion of the formulation is in Lee
+    and Helsel (in press).
+
+    Note that if the input vector `censored' is of zero length, then
+    the plotting positions are calculated using \code{ppoints}.
+    Otherwise, \code{hc.ppoints.uncen} and \code{hc.ppoints.cen}
+    are used.
 
     \code{hc.ppoints.uncen} calculates plotting positions for uncensored 
     data only.
@@ -68,7 +73,7 @@
     Lopaka(Rob) Lee <rclee@usgs.gov>
 } 
 \seealso{
-    \code{\link{lros}}, \code{\link{splitQual}}
+    \code{\link{ros}}, \code{\link{splitQual}}
 }
 \examples{
     obs      = c(0.5,    0.5,   1.0,  1.5,   5.0,    10,   100)

@@ -1,19 +1,20 @@
-\name{lros} 
+\name{ros} 
+\alias{ros} 
 \alias{lros} 
-\alias{print.lros}
-\alias{as.data.frame.lros}
-\title{Linear Regression on Order Statistics} 
+\alias{print.ros}
+\alias{as.data.frame.ros}
+\title{Regression on Order Statistics} 
 \description{
-    \code{lros} is an implementation of a Linear Regression on Order Statistics
-    (LROS) designed for multiply censored analytical chemistry data.
+    \code{ros} is an implementation of a Regression on Order Statistics
+    (ROS) designed for multiply censored analytical chemistry data.
 
     The method assumes data contains zero to many left censored (less-than)
     values.
 
-    By default, \code{lros} performs a log transformation prior to, 
+    By default, \code{ros} performs a log transformation prior to, 
     and after operations over the data.
 } 
-\usage{ lros(obs, censored, forwardT="log", reverseT="exp")} 
+\usage{ ros(obs, censored, forwardT="log", reverseT="exp")} 
 \arguments{
         \item{obs}{
             A numeric vector of observations.  This includes both censored
@@ -25,11 +26,11 @@
         } 
         \item{forwardT}{
 	        A name of a function to use for transformation prior to performing
-	        the LROS fit.  Defaults to \code{log}.
+	        the ROS fit.  Defaults to \code{log}.
         } 
         \item{reverseT}{
 	        A name of a function to use for reversing the transformation
-	        after performing the LROS fit. Defaults to \code{exp}.
+	        after performing the ROS fit. Defaults to \code{exp}.
         }
 
 } 
@@ -52,10 +53,10 @@
 
 %% Function return values 
 \value{
-    \code{lros} returns an object of class c("lros", "lm").
+    \code{ros} returns an object of class c("ros", "lm").
 
-    \code{print} displays a simple summary of the LROS model.
-    \code{as.data.frame} converts the modeled data in a LROS model to
+    \code{print} displays a simple summary of the ROS model.
+    \code{as.data.frame} converts the modeled data in a ROS model to
     a data frame. Note that this discards all linear-model information
     from the object.
 } 
@@ -66,7 +67,7 @@
     regression on order statistics, Computers in Geoscience vol. X, pp. X-X
 
     Lee and Helsel (in press) Baseline models of trace elements in
-    drinking water of the United States. Applied Geochemistry vol. X, pp. X-X.
+    major aquifers of the United States. Applied Geochemistry vol. X, pp. X-X.
 
     Dennis R. Helsel (2004), Nondetects And Data Analasis:
     John Wiley and Sons, New York.
@@ -83,16 +84,16 @@
     Lopaka(Rob) Lee <rclee@usgs.gov>
 } 
 \seealso{
-    \code{\link{splitQual}}, \code{\link{predict.lros}}, 
-    \code{\link{plot.lros}}, \code{\link{summary.lros}}
+    \code{\link{splitQual}}, \code{\link{predict.ros}}, 
+    \code{\link{plot.ros}}, \code{\link{summary.ros}}
 }
 \examples{
     obs      = c(0.5,    0.5,   1.0,  1.5,   5.0,    10,   100)
     censored = c(TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE)
 
-    mylros = lros(obs, censored) 
+    myros = ros(obs, censored) 
 
-    summary(mylros)
-    as.data.frame(mylros)
+    summary(myros)
+    as.data.frame(myros)
 } 
 \keyword{regression} 
