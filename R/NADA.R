@@ -1,8 +1,8 @@
 ###
 # NADA for R by Lopaka Lee.
 #
-# Version 1.1-1
-# Copyright (2004) Lopaka Lee
+# Version 1.1-2
+# Copyright (2004, 2005) Lopaka Lee
 #
 # A S-language software module based on 
 # methodologies described by Dennis R. Helsel in his book 
@@ -209,11 +209,11 @@ function(x, ...)
 summary.ros =
 function(object, plot=FALSE, ...)
 {
-    ret = summary.lm(object)
+    ret = summary.lm(object, ...)
     if (plot)
       {
         oldClass(object) = "lm"
-        plot.lm(object)
+        plot.lm(object, ...)
       }
     return(ret)
 }
@@ -386,7 +386,7 @@ function(obs, censored)
     return(pp)
 }
 
-# .cohN Calculates 'Cohn' numbers -- quantities described by 
+# .cohnN Calculates 'Cohn' numbers -- quantities described by 
 # Helsel and Cohn's (1988) reformulation of a prob-plotting formula
 # described by Hirsch and Stedinger (1987).
 .cohnN =
@@ -831,7 +831,7 @@ cendiff =
 function(formula, rho = 1, ...)
 #function(formula, data, subset, na.action, rho = 1, ...)
 {
-    x = survival::survdiff(formula, ...)
+    x = survival::survdiff(formula, rho, ...)
     # To do: modify the call object to reflect cenfit call
     # for now, just nullify it -- users typically remember the call.
     x$call = NULL
