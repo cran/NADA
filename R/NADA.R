@@ -1,7 +1,7 @@
 ###
-# NADA for R and S-PLUS by Lopaka Lee.
+# NADA for R by Lopaka Lee.
 #
-# Version 1.0-2
+# Version 1.1-1
 # Copyright (2004) Lopaka Lee
 #
 # A S-language software module based on 
@@ -21,6 +21,102 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 ###
 
+
+###-->> BEGIN R-package initialization routines
+
+.First.lib =
+function(libname, pkgname)
+{
+    require(survival, quietly=TRUE)
+}
+
+###-->> END R-package initialization routines
+
+###-->> BEGIN Generic methods for S/R objects
+
+# Here we make some S3 generics that don't usually exist.
+#
+# This shuts up the warning we get for masking functions in the base package
+.conflicts.OK = 1
+#
+# abline() as a S3 generic
+#   Note that abline is in graphics:: in R > 1.9.x
+abline.default =
+    if (exists("abline", where = NULL, inherits = FALSE, mode = "function"))
+        base::abline else graphics::abline
+
+abline = 
+function (a = NULL, b = NULL, h = NULL, v = NULL, reg = NULL,
+          coef = NULL, ...) UseMethod("abline")
+
+# mean() as a S3 generic
+#   Note that mean is in stats:: in R > 1.9.x
+mean.default = 
+    if (exists("mean", where = NULL, inherits = FALSE, mode = "function"))
+        base::mean.default else stats::mean
+
+mean = function(x, ...) UseMethod("mean")
+
+# sd() as a S3 generic
+#   Note that sd is in stats:: in R > 1.9.x
+sd.default = 
+    if (exists("sd", where = NULL, inherits = FALSE, mode = "function"))
+        base::sd else stats::sd 
+
+sd = function(x, na.rm) UseMethod("sd")
+
+
+# median() as a S3 generic
+#   Note that median is in stats:: in R > 1.9.x
+median.default = 
+    if (exists("median", where = NULL, inherits = FALSE, mode = "function"))
+        base::median else stats::median 
+
+median = function(x, na.rm) UseMethod("median")
+#
+#
+###-->> END Generic methods for S/R objects
+
+
+###-->> BEGIN Regression on Order Statistics (ROS) functions
+
+###-->> BEGIN General utility functions
+
+##
+# splitQual extracts qualifed and unqualifed vectors from a vector
+# containing concatenated qualifiying characters and numeric values
+# like "<0.5". See man page.
+splitQual =
+function(v, qual.symbol = "<")
+{
+    qual.index = grep(qual.symbol, x=as.character(v))  
+
+    qual.chars = as.character(v[qual.index])
+    qual = as.numeric(sub(qual.symbol, "", qual.chars))
+
+    unqual.index = -1 * qual.index
+    unqual = as.numeric(as.character(v[unqual.index]))
+    
+    return(list(qual         = qual, 
+                unqual       = unqual, 
+                qual.index   = qual.index,
+                unqual.index = unqual.index))
+}
+
+## pct.censored  -- Simple function to save some typing
+pct.censored =
+function(obs, censored)
+{
+    if (!is.logical(censored)) 
+      {
+        stop("censored indicator must be logical vector!\n")
+      }
+
+    return(100*(length(obs[censored])/length(obs)))
+}
+
+###-->> END General utility functions
+
 # ros -- Regression on Order Statistics (ROS).
 # An implementation of ROS for left-censored data (less-thans) 
 # containing one to multiple censoring thresholds. See man page.
@@ -39,6 +135,11 @@ function(obs,
     else if (!exists(reverseT)) {
         stop("Can not find Reverse Transformation function: ", reverseT, "\n")
     }
+
+    if (!is.logical(censored)) 
+      {
+        stop("censored indicator must be logical vector!\n")
+      }
 
     if ( (length(obs[censored])/length(obs)) > 0.8 ) {
         warning("Input > 80% censored -- Results are tenuous.\n")
@@ -82,45 +183,6 @@ function(x)
     return(x)
 }
 
-
-## Generic methods for ros objects
-
-###
-# Here we make some S3 generics that don't usually exist.
-#
-# This shuts up the warning we get for masking functions in the base package
-.conflicts.OK = 1
-#
-# abline() as a S3 generic -- see abline.ros below 
-#   Note that abline is in graphics:: in R > 1.9.x
-abline.default =
-    if (exists("abline", where = NULL, inherits = FALSE, mode = "function"))
-        base::abline else graphics::abline
-
-abline = 
-function (a = NULL, b = NULL, h = NULL, v = NULL, reg = NULL,
-          coef = NULL, ...) UseMethod("abline")
-
-
-# sd() as a S3 generic -- see sd.ros below 
-#   Note that sd is in stats:: in R > 1.9.x
-sd.default = 
-    if (exists("sd", where = NULL, inherits = FALSE, mode = "function"))
-        base::sd else stats::sd 
-
-sd = function(x, na.rm) UseMethod("sd")
-#
-# median() as a S3 generic -- see median.ros below
-#   Note that median is in stats:: in R > 1.9.x
-median.default = 
-    if (exists("sd", where = NULL, inherits = FALSE, mode = "function"))
-        base::median else stats::median 
-
-median = function(x, na.rm) UseMethod("median")
-#
-#predict.default = predict
-#
-###
 
 print.ros =
 function(x, ...)
@@ -302,7 +364,12 @@ function(x,
 # using the standard ppoints() function.
 hc.ppoints = 
 function(obs, censored)
-{
+{    
+    if (!is.logical(censored)) 
+      {
+        stop("censored indicator must be logical vector!\n")
+      }
+
     pp = numeric(length(obs))
 
     if (!any(censored)) pp = ppoints(obs)
@@ -385,7 +452,7 @@ function(obs, censored, cn)
 # hc.ppoints.cen calculates plotting postions for censored data.
 hc.ppoints.cen =
 function(obs, censored, cn)
-{
+{    
     if (missing(cn)) { cn = .cohnN(obs, censored) }
 
     C     = cn$C
@@ -411,33 +478,501 @@ function(obs, censored, cn)
     return(pp)
 }
 
+###-->> END Regression on Order Statistics (ROS) functions
 
-## General utility functions
+###-->> BEGIN Survival Analysis-based functions -- 'cencode' part of NADA4R
 
-##
-# splitQual extracts qualifed and unqualifed vectors from a vector
-# containing concatenated qualifiying characters and numeric values
-# like "<0.5". See man page.
-splitQual =
-function(v, qual.symbol = "<")
+# utility to create ECDFs that are useful to us
+cenECDF = function(x, y) 
 {
-    qual.index = grep(qual.symbol, x=as.character(v))  
-
-    qual.chars = as.character(v[qual.index])
-    qual = as.numeric(sub(qual.symbol, "", qual.chars))
-
-    unqual.index = -1 * qual.index
-    unqual = as.numeric(as.character(v[unqual.index]))
-    
-    return(list(qual         = qual, 
-                unqual       = unqual, 
-                qual.index   = qual.index,
-                unqual.index = unqual.index))
+    y = y[order(x)]
+    x = sort(x)
+    return(stepfun(x[-1], y))
 }
 
-## pct.censored  -- Simple function to save some typing
-pct.censored =
-function(obs, censored)
+# Cen() is analgous to Surv() in survival package.
+# The difference is that Cen() "flips" the our left-censored data
+# into right-censored data so that the survival code can be used.
+Cen =
+function(obs, censored, type="left", ...) 
 {
-    return(100*(length(obs[censored])/length(obs)))
+    if (!is.logical(censored)) 
+      {
+        stop("censored indicator must be logical vector!\n")
+      }
+
+    m = Surv(time=obs, time2=(!censored), type=type, ...)
+
+    oldClass(m) = c("Cen", class(m))
+    attr(m, 'flipFactor') = max(obs) 
+
+    if (type == "left") m = flip(m)
+
+    return(m)
 }
+
+# flip() a Cen object back into its original scale.
+# All functions transparently do this for the user.
+flip =
+function(x) 
+{
+    if (!is(x, "Cen")) stop ("Input must be a Cen object");
+
+    x[,1] = attr(x, 'flipFactor') - x[,1]
+
+    if      (attr(x, 'type') == "right") attr(x, 'type') =  "left"
+    else if (attr(x, 'type') == "left")  attr(x, 'type') =  "right"
+    else stop ("Can only flip \"left\" or \"right\" censored Cen objects")
+
+    return(x)
+}
+
+cenfit =
+function (formula, data=NULL, ...) 
+{
+    ## This turns a Cen object in a proper model object.
+    #  Typical S-Language ugliness follows ...
+    call <- match.call()
+    if ((mode(call[[2]]) == "call" && 
+         call[[2]][[1]] == as.name("Cen")) ||
+         inherits(formula, "Cen")) 
+      {
+        formula = eval(parse(text=paste(deparse(call[[2]]), 1, sep = "~")))
+        environment(formula) <- parent.frame()
+      }
+    m = match.call(expand = FALSE)
+    m$formula = terms(formula)
+    m[[1]] = as.name("model.frame")
+
+    if (is.null(data)) m = eval(m, parent.frame())
+    else m = eval(m, data, parent.frame())
+    ##
+
+    # construct the survival curve
+    sf = NULL
+    if (is.null(data)) sf = survfit(formula, ...)
+    else sf = survfit(formula, data=data, ...)
+
+    # flip results back into the expected scale
+    cenObj = model.response(m)
+    sf$time = attr(cenObj, "flipFactor") - sf$time
+
+    oldClass(sf) = c("cenfit", "survfit")
+
+    return(sf)
+}
+
+
+# Indexing cenfit objects -- 
+# When this happens, we throw away the strata information.
+"[.cenfit" = 
+function(x, i, j, drop=F) 
+{
+    if (is.null(x$strata)) stop("can't index; object contains only one ECDF")
+
+    x$n = x$strata.all[i]
+
+    class(x) = "survfit"
+    x = NextMethod("[")
+    class(x) = c("cenfit", "survfit")
+
+    x$strata        = NULL
+    x$strata.all    = NULL
+    x$ntimes.strata = NULL
+
+    return (x)
+}
+
+summary.cenfit =
+function(object, times, censored=FALSE, scale=1, ...)
+{
+    class(object) = "survfit"
+    x = summary(object, times, censored, scale, ...)
+    # To do: modify the call object to reflect cenfit call
+    # for now, just nullify it -- users typically remember the call.
+    x$call = NULL
+    # Reverse vectors -- our world sees things from the left ;-)
+    x = lapply(x, rev)
+    class(x) = c("summary.cenfit", "summary.survfit")
+    return(x)
+}
+
+plot.cenfit =
+function(x, 
+         log  = 'x', 
+         axLimitFactor = 0.8, 
+         ylab = "Probability", 
+         xlab = "Value", 
+         lty  = seq(1,6),
+         ...)
+{
+    firstx = (min(x$time)*axLimitFactor)
+
+    oldClass(x) = "survfit"
+    plot(x, log=log, firstx=firstx, ylab=ylab, xlab=xlab, lty=lty, ...)
+
+    # Draw a vertical line at the minimum observation -- this is
+    # the lower extent of the step curve or ECDF.
+    abline(v=min(x$time))
+
+    abline(h=1.0)
+}
+
+# NADA internal function -- used by predict.cenfit and quantile.cenfit
+.predict.cenfit =
+function(newdata, ecdF, ecdF.l, ecdF.u, do.conf, conf.int) 
+{
+    obj  = NULL
+    pred = ecdF(newdata)
+
+    if (!do.conf) obj = pred
+    else
+      {
+        pred.l = ecdF.l(newdata)
+        pred.u = ecdF.u(newdata)
+
+        obj = data.frame(newdata, pred, pred.l, pred.u)
+
+        l.lbl = paste(conf.int, "LCL", sep='')
+        u.lbl = paste(conf.int, "UCL", sep='')
+
+        names(obj) = c("newdata", "prediction", l.lbl, u.lbl)
+      }
+
+    return(obj)
+}
+
+predict.cenfit =
+function(object, newdata, do.conf=FALSE, ...) 
+{
+    x = object
+    obj = NULL
+
+    if (is.null(x$strata))
+      {
+        ecdF   = cenECDF(x$time, x$surv)
+        ecdF.l = cenECDF(x$time, x$lower)
+        ecdF.u = cenECDF(x$time, x$upper)
+        
+        obj = 
+        .predict.cenfit(newdata, ecdF, ecdF.l, ecdF.u, do.conf, x$conf.int)
+      }
+    else
+      {
+        nstrata = length(x$strata)
+        for (i in 1:nstrata)
+          {
+            ix = (rep(1:nstrata, x$strata) == i)
+
+            ecdF   = cenECDF(x$time[ix], x$surv[ix])
+            ecdF.l = cenECDF(x$time[ix], x$lower[ix])
+            ecdF.u = cenECDF(x$time[ix], x$upper[ix])
+            
+            obj[[i]] = 
+            .predict.cenfit(newdata, ecdF, ecdF.l, ecdF.u, do.conf, x$conf.int)
+
+            if (!do.conf) names(obj[[i]]) = as.character(newdata)
+          }
+        names(obj) = names(x$strata)
+      }
+
+    return(obj)
+}
+
+quantile.cenfit =
+function(x, 
+         probs   = c(0.05,0.10,0.25,0.50,0.75,0.90,0.95), 
+         do.conf = FALSE, 
+         ...)
+{
+    obj = NULL
+
+    # Local utility to assign names to quantile vectors or dataframes
+    nameObj =
+    function(obj) 
+    {
+      if (do.conf) names(obj)[c(1,2)] = c("prob", "quantile")
+      else
+        {
+          names(obj) = 
+            paste(formatC(100 * probs, format = "fg", wid = 1), "%", sep='')
+        }
+      return(obj)
+    }
+
+    #
+    if (is.null(x$strata))
+      {
+        inv   = cenECDF(x$surv, x$time)
+        inv.l = cenECDF(x$surv, x$lower)
+        inv.u = cenECDF(x$surv, x$upper)
+        
+        obj = .predict.cenfit(probs, inv, inv.l, inv.u, do.conf, x$conf.int)
+
+        obj = nameObj(obj)
+      }
+    else
+      {
+        nstrata = length(x$strata)
+        for (i in 1:nstrata)
+          {
+            ix = (rep(1:nstrata, x$strata) == i)
+
+            inv   = cenECDF(x$surv[ix], x$time[ix])
+            inv.l = cenECDF(x$surv[ix], x$lower[ix])
+            inv.u = cenECDF(x$surv[ix], x$upper[ix])
+            
+            obj[[i]] = 
+            .predict.cenfit(probs, inv, inv.l, inv.u, do.conf, x$conf.int)
+            
+            obj[[i]] = nameObj(obj[[i]])
+          }
+        names(obj) = names(x$strata)
+      }
+
+    return(obj)
+}
+
+.mean.cenfit =
+function (stime, surv, n.risk, n.event) 
+{
+    mean = NULL
+    varmean = NULL
+
+    min.stime = min(stime)
+    min.time = min(0, min.stime)
+    n = length(stime)
+
+    hh = c(ifelse((n.risk[-n] - n.event[-n]) == 0, 
+                   0, 
+                   n.event[-n]/(n.risk[-n] * (n.risk[-n] - n.event[-n]))), 0)
+
+    ndead = sum(n.event)
+    dif.time = c(diff(c(min.time, stime)), 0)
+
+    if (!is.matrix(surv)) 
+      {
+        mean = dif.time * c(1, surv)
+        varmean = sum(rev(cumsum(rev(mean))^2)[-1] * hh)
+      }
+    else 
+      {
+        n = nrow(surv)
+        mean = dif.time * rbind(1, surv)
+        if (n == 1) 
+            temp = mean[2, , drop = FALSE]
+        else temp = (apply(mean[(n + 1):2, , drop = FALSE], 2, 
+            cumsum))[n:1, , drop = FALSE]
+        varmean = c(hh %*% temp^2)
+      }
+
+    obj = c(sum(mean), sqrt(varmean))
+    names(obj) = c("rmean", "se(rmean)")
+
+    return(obj)
+}
+
+mean.cenfit =
+function (x, ...) 
+{
+    obj = NULL
+
+    if (is.null(x$strata))
+      {
+        obj = .mean.cenfit(x$time, x$surv, x$n.risk, x$n.event)
+      }
+    else
+      {
+        nstrata = length(x$strata)
+        for (i in 1:nstrata)
+          {
+            ix = (rep(1:nstrata, x$strata) == i)
+
+            obj[[i]] = 
+              .mean.cenfit(x$time[ix], x$surv[ix], x$n.risk[ix], x$n.event[ix])
+          }
+        names(obj) = names(x$strata)
+      }
+
+    return(obj)
+}
+
+median.cenfit =
+function(x, na.rm=FALSE)
+{
+    # To do: remove NAs?
+    quantile.cenfit(x, 0.5)
+}
+
+sd.cenfit =
+function(x, na.rm=FALSE)
+{
+    # To do: remove NAs?
+    obj = NULL
+
+    if (is.null(x$strata)) obj = (sqrt(x$n) * as.numeric(mean.cenfit(x)[2]))
+    else
+      {
+        nstrata = length(x$strata)
+        for (i in 1:nstrata)
+          {
+            n = as.numeric(x$strata.all[i])
+            obj[[i]] = (sqrt(n) * as.numeric(mean.cenfit(x[i])[2]))
+          }
+        names(obj) = names(x$strata)
+      }
+
+    return(obj)
+}
+
+# Wrapper for survival::survdiff 
+# default of rho = 1 means Peto-Peto is used.
+cendiff = 
+function(formula, rho = 1, ...)
+#function(formula, data, subset, na.action, rho = 1, ...)
+{
+    x = survival::survdiff(formula, ...)
+    # To do: modify the call object to reflect cenfit call
+    # for now, just nullify it -- users typically remember the call.
+    x$call = NULL
+    return(x)
+}
+
+print.cenfit =
+function(x, ...) 
+{
+    obj = NULL
+
+    summaryVec =
+    function(x)
+    {
+      n      = x$n
+      events = sum(x$n.event)
+      median = median(x)
+      mean   = mean(x)
+
+      return(c(n, events, median, mean))
+    }
+
+    if (is.null(x$strata))
+      {
+        obj = summaryVec(x)
+        names(obj) = c("n", "events", "median", "mean", "se(mean)")
+      }
+    else
+      {
+        obj = summaryVec(x[1])
+        for (i in 2:length(x$strata))
+          {
+            obj = rbind(obj, summaryVec(x[i]))
+          }
+        colnames(obj) = c("n", "events", "median", "mean", "se(mean)")
+        rownames(obj) = names(x$strata)
+      }
+
+    print(obj, ...)
+    invisible(obj)
+}
+
+#####
+#####
+# What follows is hydras code from the survival package.
+# For now, the easiest thing to do is MODify it for our needs.
+
+# MODified survival::summary.survfit
+
+# MODified survival::print.summary.survfit
+# The labeling of output vectors/columns is burried in here.  
+# We want labeling to be consistent with our world view.
+print.summary.cenfit =
+function(x, 
+         digits = max(options()$digits - 4, 3), 
+         ...) 
+{
+    savedig <- options(digits=digits)
+    on.exit(options(savedig))
+
+## MOD: We can remember what the call was, thank you.
+##    if (!is.null(cl<- x$call)) {
+##	cat("Call: ")
+##	dput(cl)
+##	cat("\n")
+##	}
+
+    omit <- x$na.action
+    if (length(omit)) 
+	    cat(naprint(omit), "\n")
+    if (x$type == 'right' || is.null(x$n.entered)) {
+	mat <- cbind(x$time, x$n.risk, x$n.event, x$surv)
+# MOD: time --> obs/observation
+	cnames <- c("obs", "n.risk", "n.event")
+        }
+
+    else if (x$type == 'counting') {
+	mat <- cbind(x$time, x$n.risk, x$n.event, x$n.entered,
+		     x$n.exit.censored, x$surv)
+# MOD: time --> obs/observation
+	cnames <- c("obs", "n.risk", "n.event", 
+		    "n.entered", "n.censored")
+        }
+    if (is.matrix(x$surv)) ncurve <- ncol(x$surv)
+    else	           ncurve <- 1
+    if (ncurve==1) {                 #only 1 curve
+# MOD: survival --> prob/probability
+	cnames <- c(cnames, "prob")
+	if (!is.null(x$std.err)) {
+	    if (is.null(x$lower)) {
+		mat <- cbind(mat, x$std.err)
+		cnames <- c(cnames, "std.err")
+	        }
+	    else {
+		mat <- cbind(mat, x$std.err, x$lower, x$upper)
+		cnames <- c(cnames, 'std.err',
+			    paste("lower ", x$conf.int*100, "% CI", sep=''),
+			    paste("upper ", x$conf.int*100, "% CI", sep=''))
+	        }	
+	    }
+        }
+# MOD: survival --> prob/probability
+    else cnames <- c(cnames, paste("prob", seq(ncurve), sep=''))
+
+    if (!is.null(x$new.start)) {
+	mat.keep <- mat[,1] >= x$new.start
+	mat <- mat[mat.keep,,drop=FALSE]
+	if (is.null(dim(mat)))
+		stop(paste("No information available using new.start =", x$new.start, "."))
+        }
+    if (!is.matrix(mat)) mat <- matrix(mat, nrow=1)
+    if (!is.null(mat)) {
+	dimnames(mat) <- list(NULL, cnames)
+	if (is.null(x$strata))
+		prmatrix(mat, rowlab=rep("", nrow(mat)))
+	else  { #print it out one strata at a time
+	    if (!is.null(x$times.strata))
+		    strata <- x$times.strata
+	    else
+		    strata <- x$strata
+	   
+	    if (!is.null(x$new.start))
+		    strata <- strata[mat.keep]
+	    for (i in levels(strata)) {
+		who <- (strata==i)
+		cat("               ", i, "\n")
+		if (sum(who) ==1)
+			print(mat[who,])
+	        else
+		    prmatrix(mat[who,], rowlab=rep("", sum(who)))
+
+		cat("\n")
+ 	        }
+	    }
+        }
+    else 
+	stop("There are no events to print.  Please use the option ",
+	    "censored=TRUE with the summary function to see the censored ",
+	    "observations.")
+    invisible(x)
+}
+
+
+###-->> END Survival Analysis-based functions

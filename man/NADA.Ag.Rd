@@ -1,8 +1,7 @@
 \name{NADA.Ag}
 \alias{NADA.Ag}
-\docType{data}
 \alias{Ag}
-\alias{silver}
+\docType{data}
 \title{Dissolved silver concentrations from water analyses} 
 \description{
     This dataset was used by Helsel and Cohn (1988) to verify their
@@ -10,10 +9,10 @@
 }
 \usage{data(NADA.Ag)}
 \format{
-    A list containing 56 observations with items `obs' and `censored'.
-    `obs' is a numeric vector of all observations (both censored
-    and uncensored).  `censored' is a logical vector indicating where
-    an element of `obs' is censored (a less-than value).
+    A list containing 56 observations with items 'obs' and 'censored'.
+    'obs' is a numeric vector of all observations (both censored
+    and uncensored).  'censored' is a logical vector indicating where
+    an element of 'obs' is censored (a less-than value).
 }
 \source{Helsel and Cohn (1988)}
 \references{

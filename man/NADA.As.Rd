@@ -1,8 +1,8 @@
 \name{NADA.As}
 \alias{NADA.As}
-\docType{data}
 \alias{As}
 \alias{arsenic}
+\docType{data}
 \title{Dissolved arsenic concentrations in ground water of U.S.}
 \description{
     This dataset is a random selection of dissolved arsenic analyses taken
