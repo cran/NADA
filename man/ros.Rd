@@ -1,8 +1,6 @@
 \name{ros} 
 \alias{ros} 
 \alias{lros} 
-\alias{print.ros}
-\alias{as.data.frame.ros}
 \title{Regression on Order Statistics} 
 \description{
     \code{ros} is an implementation of a Regression on Order Statistics
@@ -11,8 +9,6 @@
     The method assumes data contains zero to many left censored (less-than)
     values.
 
-    By default, \code{ros} performs a log transformation prior to, 
-    and after operations over the data.
 } 
 \usage{ ros(obs, censored, forwardT="log", reverseT="exp")} 
 \arguments{
@@ -35,6 +31,11 @@
 
 } 
 \details{
+    By default, \code{ros} performs a log transformation prior to, and after
+    operations over the data.  This can be changed by specifying a forward and
+    reverse transformation function using the \code{forwardT} and
+    \code{reverseT} parameters.  No transformation will be performed if either
+    \code{forwardT} or \code{reverseT} are set to \code{NULL}. 
 
     The proceedure first computes the Weibull-type plotting positions of
     the combined uncensored and censored observations using a formula
@@ -84,8 +85,18 @@
     Lopaka(Rob) Lee <rclee@usgs.gov>
 } 
 \seealso{
-    \code{\link{splitQual}}, \code{\link{predict.ros}}, 
-    \code{\link{plot.ros}}, \code{\link{summary.ros}}
+    \code{\link{splitQual}}, 
+    \code{\link{predict}}, 
+    \code{\link{plot}}, 
+    \code{\link{ros-class}}, 
+    \code{\link{ros-methods}},
+    \code{\link{plot-methods}},
+    \code{\link{mean-methods}},
+    \code{\link{sd-methods}},
+    \code{\link{quantile-methods}},
+    \code{\link{median-methods}},
+    \code{\link{predict-methods}},
+    \code{\link{summary-methods}}
 }
 \examples{
     obs      = c(0.5,    0.5,   1.0,  1.5,   5.0,    10,   100)
@@ -93,7 +104,10 @@
 
     myros = ros(obs, censored) 
 
+    plot(myros)
     summary(myros)
+    mean(myros); sd(myros)
+    quantile(myros); median(myros)
     as.data.frame(myros)
 } 
 \keyword{regression} 

@@ -1,7 +1,5 @@
-\name{NADA.As}
-\alias{NADA.As}
+\name{As}
 \alias{As}
-\alias{arsenic}
 \docType{data}
 \title{Dissolved arsenic concentrations in ground water of U.S.}
 \description{
@@ -9,7 +7,9 @@
     during the U.S. Geological Survey's National Water Quality Assessment
     program (NAWQA).  
 }
-\usage{data(NADA.As)}
+\usage{
+    data(NADA.As)
+}
 \format{
     A list containing 50 observations with items `obs' and `censored'.
     `obs' is a numeric vector of all arsenic observations (both censored

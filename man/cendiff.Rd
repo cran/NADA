@@ -8,51 +8,44 @@ Test Censored ECDF Differences
     distribution functions (ECDF) using the \eqn{G^\rho}{G-rho} family of tests,
     or for a single curve against a known alternative.
 
-    This function shares the same arguments as \code{survdiff}.
-    See \code{survdiff} for more info.
 }
 \usage{
-cendiff(formula, rho=1, ...)
+    cendiff(obs, censored, groups, ...)
 }
 \arguments{
-\item{formula}{
-    a formula expression as for other ECDF models, of the form
-    \code{Cen(obs, censored) ~ predictors}.  For a one-sample test, the
-    predictors must consist of a single \code{offset(sp)} term, where
-    \code{sp} is a vector giving the survival probability of each subject.
-    For a k-sample test, each unique combination of predictors defines a
-    subgroup.  A \code{strata} term may be used to produce a stratified test.
-    To cause missing values in the predictors to be treated as a separate
-    group, rather than being omitted, use the \code{strata} function with
-    its \code{na.group=T} argument.
+
+\item{obs}{
+    Either a numeric vector of observations or a formula.
+    See examples below.
+} 
+\item{censored}{
+    A logical vector indicating TRUE where an observation in `obs' is
+    censored (a less-than value) and FALSE otherwise.
 }
-%\item{data}{
-%    an optional data frame in which to interpret the variables occurring
-%    in the formula.
-%}
-%\item{subset}{
-%    expression indicating which subset of the rows of data should be used
-%    in the fit.  This can be a logical vector (which is replicated to
-%    have length equal to the number of observations), a numeric vector
-%    indicating which observation numbers are to be included (or excluded
-%    if negative), or a character vector of row names to be included.
-%    All observations are included by default.
-%}
-%\item{na.action}{
-%    a missing-data filter function.  This is applied to the
-%    \code{model.frame} after any subset argument has been used.
-%    Default is \code{options()$na.action}.
-%}
-\item{rho}{
-    a scalar parameter that controls the type of test.  See Method below.
+\item{groups}{
+    A factor vector used for grouping `obs' into subsets.
 }
 \item{...}{
-    additional items to pass to \code{survdiff}.  Note
+    Addtional items that are common to this function and the \code{survdiff}
+    function from the `survival' package.  See Details.
 }
+
+%\item{formula}{
+%    a formula expression as for other ECDF models, of the form
+%    \code{Cen(obs, censored) ~ predictors}.  For a one-sample test, the
+%    predictors must consist of a single \code{offset(sp)} term, where
+%    \code{sp} is a vector giving the survival probability of each subject.
+%    For a k-sample test, each unique combination of predictors defines a
+%    subgroup.  A \code{strata} term may be used to produce a stratified test.
+%    To cause missing values in the predictors to be treated as a separate
+%    group, rather than being omitted, use the \code{strata} function with
+%    its \code{na.group=T} argument.
+%}
+
 }
 
 \value{
-    a list with components:
+    Returns a list with the following components:
 
 \item{n}{
     the number of subjects in each group.
@@ -74,19 +67,23 @@ cendiff(formula, rho=1, ...)
 \item{strata}{
     optionally, the number of subjects contained in each stratum.
 }}
-\section{Method}{
-    This function implements the G-rho family of Harrington and Fleming
-    (1982), with weights on each death of \eqn{S(t)^\rho}{S(t)^rho},
-    where \eqn{S(t)}{S} is the Kaplan-Meier estimate of survival.
-    With \code{rho = 0} this is the log-rank or Mantel-Haenszel test, and
-    with \code{rho = 1} it is equivalent to the Peto & Peto modification
-    of the Gehan-Wilcoxon test.  The default is \code{rho = 1}, or the
-    Peto & Peto test.
+\details{
+    This, and related routines, are front ends to routines in the
+    \code{survivial} package.  Since the survival routines can not handle
+    left-censored data, these routines tranparently handle ``flipping" input
+    data and resultant calculations.  
 
-    If the right hand side of the formula consists only of an offset
-    term, then a one sample test is done.  To cause missing values in
-    the predictors to be treated as a separate group, rather than being
-    omitted, use the \code{factor} function with its \code{exclude}
+    This function shares the same arguments as \code{\link{survdiff}}.  The
+    most important of which is \code{rho} which controls the type of test.
+    With \code{rho = 0} this is the log-rank or Mantel-Haenszel test, and with
+    \code{rho = 1} it is equivalent to the Peto & Peto modification of the
+    Gehan-Wilcoxon test.  The default is \code{rho = 1}, or the Peto & Peto
+    test.  This is the most appropriate for left-censored log-normal data.
+
+    For the formula interface: if the right hand side of the formula consists
+    only of an offset term, then a one sample test is done.  To cause missing
+    values in the predictors to be treated as a separate group, rather than
+    being omitted, use the \code{factor} function with its \code{exclude}
     argument.
 }
 \references{
@@ -97,15 +94,26 @@ cendiff(formula, rho=1, ...)
     procedures for censored survival data.  \emph{Biometrika} \bold{69},
     553-566.
 }
+\seealso{
+    \code{\link{Cen}},
+%    \code{\link{cendiff-methods}}, 
+    \code{\link{survdiff}}
+}
 \author{
     Lopaka(Rob) Lee <rclee@usgs.gov>
 } 
 \examples{
-    # Contrived: are there diffs between instrument methods?
-    obs        = c(0.5,    0.5,   1.0,  1.5,   5.0,    10,   100)
-    censored   = c(TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE)
-    instrument = as.factor(c('ICP', 'ICP', 'ICP', 'AA',  'AA',  'AA',  'AA'))
 
-    cendiff(Cen(obs, censored)~instrument)
+    data(Cadmium)
+
+    obs      = Cadmium$Cd
+    censored = Cadmium$CdCen
+    groups   = Cadmium$Region
+
+    # Cd differences between regions?
+    cendiff(obs, censored, groups)
+    
+    # Same as above using formula interface
+    cenfit(Cen(obs, censored)~groups) 
 }
 \keyword{survival}

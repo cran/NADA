@@ -1,8 +1,7 @@
 \name{Cen}
 \alias{Cen}
-\alias{flip}
 %\alias{is.Cen}
-\alias{print.Cen}
+%\alias{print.Cen}
 %\alias{Math.Cen}
 %\alias{Summary.Cen}
 %\alias{[.Cen}
@@ -22,8 +21,7 @@ formula.
 }
 %\synopsis{Cen(obs, obs2, censored, type, origin)}
 \usage{
-Cen(obs, censored, type = "left", ...)
-flip(x)
+Cen(obs, censored, type = "left")
 %or
 %Cen(time, time2, event, type=, origin=0)
 %is.Cen(x)
@@ -37,13 +35,9 @@ flip(x)
     A logical vector indicating TRUE where an observation in obs is
 	censored (a less-than value) and FALSE otherwise.
 } 
-\item{x}{
-    A \code{Cen} object constructed using the \code{Cen} function.
-}
-\item{...}{
-    Additional items -- none at this time.
-}
-
+%\item{x}{
+%    A \code{Cen} object constructed using the \code{Cen} function.
+%}
 %\item{time2}{
 %ending time of the interval for interval censored  or counting process 
 %data only. 
@@ -87,16 +81,6 @@ flip(x)
     left-censored data, these routines tranparently handle ``flipping"
     input data and resultant calculations.  
     
-    By default, \code{Cen} ``flips" the input data by subtracting a
-    large constant that is larger than maximum input value from all
-    observations.  It then marks the data as right censored so that
-    routines from the \code{survival} package can be used.
-
-    The function \code{flip} is provided for reversing the flip
-    processes -- ALTHOUGH all routines that accept \code{Cen} objects
-    automatically flip resultant calculations back to the origial scale.
-    Thus, \code{flip} should almost never be used, except perhaps in
-    the development of an extension function.
 }
 
 %\section{DETAILS}{
@@ -133,7 +117,8 @@ censored environmental data.  John Wiley and Sons, USA, NJ.
     Lopaka(Rob) Lee <rclee@usgs.gov>
 } 
 \seealso{
-    \code{\link{cenfit}}
+    \code{\link{cenfit}},
+    \code{\link{flip-methods}}
 }
 \examples{
     obs      = c(0.5,    0.5,   1.0,  1.5,   5.0,    10,   100)

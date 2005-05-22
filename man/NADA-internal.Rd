@@ -2,9 +2,6 @@
 \title{Internal NADA Objects}
 \alias{.trueT}
 \alias{.cohnN}
-\alias{cenECDF}
-\alias{mean}
-\alias{mean.default}
 \description{
   Internal NADA functions.
 }

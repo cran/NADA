@@ -1,0 +1,35 @@
+\name{median-methods}
+\docType{methods}
+\alias{median-methods}
+\alias{median,ANY-method}
+\alias{median,cenfit-method}
+\alias{median,ros-method}
+\title{Methods for function median in Package NADA}
+\description{
+  Methods for computing the median using model objects in package \pkg{NADA}
+}
+\usage{
+\S4method{median}{ros}(x, na.rm=FALSE, ...)
+
+\S4method{median}{cenfit}(x, na.rm=FALSE, ...)
+
+} % End usage
+
+\arguments{
+
+\item{x}{
+    An output object from a NADA fuction such as \code{\link{ros}}.
+}
+\item{na.rm}{Should NAs be removed prior to computation?}
+
+\item{...}{
+        Additional arguments passed to the generic method.
+}
+
+} % End arguments
+
+\seealso{
+    \code{\link{median}}
+}
+
+\keyword{methods}

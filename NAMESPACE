@@ -1,0 +1,35 @@
+import("survival")
+
+importFrom("stats", "sd", "median", "quantile")
+importFrom("graphics", "plot", "abline", "lines")
+
+export(
+    "NADAprobs",
+    "splitQual",
+    "pct.censored",
+    "Cen",
+    "cenfit",
+    "cendiff",
+    "ros",
+    "hc.ppoints",
+    "hc.ppoints.cen",
+    "hc.ppoints.uncen")
+
+exportClasses(
+    "cenfit",
+    "ros")
+
+exportMethods(
+    "print",
+    "plot",
+    "summary",
+    "mean",
+    "sd",
+    "median",
+    "quantile",
+    "predict",
+    "flip",
+    "lines")
+
+S3method("as.data.frame", "ros")
+

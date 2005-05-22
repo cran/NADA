@@ -32,12 +32,12 @@
         Indexes of qualified values (ie., where qual.symbol was matched)
     }
 }
-\references{
-
-    Lee and Helsel (in press), Statistical analysis of environmental data
-    containing multiple detection limits: S-language software for
-    regression on order statistics, Computers in Geoscience vol. X, pp. X-X
-} 
+%\references{
+%
+%    Lee and Helsel (in press), Statistical analysis of environmental data
+%    containing multiple detection limits: S-language software for
+%    regression on order statistics, Computers in Geoscience vol. X, pp. X-X
+%} 
 \author{
     Lopaka(Rob) Lee <rclee@usgs.gov>
 } 

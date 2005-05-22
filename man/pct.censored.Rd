@@ -3,8 +3,7 @@
 \title{Calculate the percentage of values censored} 
 \description{
     \code{pct.censored} is a simple, but convenient, function that calculates
-    the percentage of censored values.  It is designed to work similar
-    to other NADA ROS functions.
+    the percentage of censored values.  
 } 
 \usage{ pct.censored(obs, censored)} 
 \arguments{
