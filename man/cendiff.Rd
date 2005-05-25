@@ -1,7 +1,7 @@
 \name{cendiff}
 \alias{cendiff}
 \title{
-Test Censored ECDF Differences
+    Test Censored ECDF Differences
 }
 \description{
     Tests if there is a difference between two or more empirical cumulative
@@ -26,7 +26,7 @@ Test Censored ECDF Differences
     A factor vector used for grouping `obs' into subsets.
 }
 \item{...}{
-    Addtional items that are common to this function and the \code{survdiff}
+    Additional items that are common to this function and the \code{survdiff}
     function from the `survival' package.  See Details.
 }
 
@@ -69,8 +69,8 @@ Test Censored ECDF Differences
 }}
 \details{
     This, and related routines, are front ends to routines in the
-    \code{survivial} package.  Since the survival routines can not handle
-    left-censored data, these routines tranparently handle ``flipping" input
+    \code{survival} package.  Since the survival routines can not handle
+    left-censored data, these routines transparently handle ``flipping" input
     data and resultant calculations.  
 
     This function shares the same arguments as \code{\link{survdiff}}.  The

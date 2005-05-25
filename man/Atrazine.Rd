@@ -1,6 +1,5 @@
 \name{Atrazine}
 \alias{Atrazine}
-\alias{atrazine}
 \docType{data}
 \title{Atrazine concentrations in Nebraska ground water -- Another Format}
 \usage{data(Atrazine)}

@@ -23,7 +23,7 @@
     An output object from a NADA fuction such as \code{\link{ros}}.
 }
 \item{probs}{
-    Numeric vector of probabilites for which to calculate model values.
+    Numeric vector of probabilities for which to calculate model values.
     The default is the global variable 
     NADAprobs = c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95).
 }

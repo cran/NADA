@@ -1,5 +1,6 @@
 \name{As}
 \alias{As}
+\alias{NADA.As}
 \docType{data}
 \title{Dissolved arsenic concentrations in ground water of U.S.}
 \description{

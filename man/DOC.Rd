@@ -1,6 +1,5 @@
 \name{DOC}
 \alias{DOC}
-\alias{doc}
 \docType{data}
 \title{DOC in ground water}
 \usage{data(DOC)}

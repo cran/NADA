@@ -1,6 +1,5 @@
 \name{Oahu}
 \alias{Oahu}
-\alias{oahu}
 \docType{data}
 \title{Arsenic concentrations in Manoa Stream, Oahu Hawaii}
 \usage{data(Oahu)}

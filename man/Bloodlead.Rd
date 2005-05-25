@@ -1,6 +1,5 @@
 \name{Bloodlead}
 \alias{Bloodlead}
-\alias{bloodlead}
 \docType{data}
 \title{Lead concentrations in the blood of herons in Virginia.}
 \usage{data(Bloodlead)}

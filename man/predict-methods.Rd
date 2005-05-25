@@ -6,7 +6,7 @@
 \alias{predict,ros-method}
 \title{Methods for function predict in package NADA}
 \description{
-  Functions that perform predictions using NADA model objets.
+  Functions that perform predictions using NADA model objects.
 
   For \code{ros} models, predict the normal quantile of a value.
 
@@ -20,7 +20,7 @@
 \arguments{
 
 \item{object}{
-    An output object from a NADA fuction such as \code{\link{ros}}.
+    An output object from a NADA function such as \code{\link{ros}}.
 }
 \item{newdata}{
         Numeric vector of data for which to predict model values.

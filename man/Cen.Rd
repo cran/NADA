@@ -77,9 +77,10 @@ Cen(obs, censored, type = "left")
 
 \section{details}{
     This, and related routines, are front ends to routines in the
-    \code{survivial} package.  Since the survival routines can not handle
-    left-censored data, these routines tranparently handle ``flipping"
-    input data and resultant calculations.  
+    \code{survival} package.  Since the survival routines can not handle
+    left-censored data, these routines transparently handle ``flipping"
+    input data and resultant calculations.  The \code{Cen} function provides
+    part of the necessary framework for flipping.
     
 }
 

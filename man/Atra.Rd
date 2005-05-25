@@ -1,6 +1,5 @@
 \name{Atra}
 \alias{Atra}
-\alias{atra}
 \docType{data}
 \title{Atrazine concentrations in Nebraska ground water}
 \usage{data(Atra)}

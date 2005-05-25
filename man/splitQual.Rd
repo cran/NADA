@@ -2,12 +2,12 @@
 \alias{splitQual} 
 \title{Split character qualifiers and numeric values from qualified data} 
 \description{
-    \code{splitQual} extracts qualifed and unqualifed vectors 
+    \code{splitQual} extracts qualified and unqualified vectors 
     from a character vector containing concatenated 
     numeric and qualifying characters.
 
     Typically used to split ``less-thans" in qualifier-numeric 
-    concantenations like ``<0.5".
+    concatenations like ``<0.5".
 }
 \usage{ splitQual(v, qual.symbol= "<") } 
 \arguments{
@@ -23,7 +23,7 @@
     \code{splitQual} returns a list of three vectors.
 
     \item{qual}{
-        A numeric vector of values associated with qualifed input.
+        A numeric vector of values associated with qualified input.
     }
     \item{unqual}{
         A numeric vector of values associated with unqualified input 

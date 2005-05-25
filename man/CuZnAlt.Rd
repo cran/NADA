@@ -1,6 +1,5 @@
 \name{CuZnAlt}
 \alias{CuZnAlt}
-\alias{cuznalt}
 \docType{data}
 \title{Zinc concentrations of the CuZn data set}
 \usage{data(CuZnAlt)}

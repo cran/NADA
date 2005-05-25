@@ -1,6 +1,5 @@
 \name{Silver}
 \alias{Silver}
-\alias{silver}
 \docType{data}
 \title{Silver-standard concentrations}
 \usage{data(Silver)}

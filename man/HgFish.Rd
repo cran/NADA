@@ -1,6 +1,5 @@
 \name{HgFish}
 \alias{HgFish}
-\alias{hgfish}
 \docType{data}
 \title{Mercury concentrations in fish across the United States.}
 \usage{data(HgFish)}

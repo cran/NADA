@@ -17,7 +17,7 @@
 \arguments{
 
 \item{x}{
-    An output object from a NADA fuction such as \code{\link{ros}}.
+    An output object from a NADA function such as \code{\link{ros}}.
 }
 \item{...}{
         Additional arguments passed to the generic method.

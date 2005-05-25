@@ -1,6 +1,5 @@
 \name{Cadmium}
 \alias{Cadmium}
-\alias{cd}
 \docType{data}
 \title{Cadmium concentrations in fish}
 \usage{data(Cadmium)}

@@ -1,6 +1,5 @@
 \name{DFe}
 \alias{DFe}
-\alias{dfe}
 \docType{data}
 \title{Dissolved iron concentrations from the Brazos River, USA}
 \usage{data(DFe)}

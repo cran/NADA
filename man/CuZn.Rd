@@ -1,6 +1,5 @@
 \name{CuZn}
 \alias{CuZn}
-\alias{cuzn}
 \docType{data}
 \title{Copper and zinc concentrations in ground water}
 \usage{data(CuZn)}

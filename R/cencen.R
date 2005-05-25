@@ -100,16 +100,19 @@ setMethod("flip", signature(x="formula"), function(x) update(x, flip(.)~.))
 cencen.Cen =
 function(obs, censored, groups, ...)
 {
-    f = substitute(a~1, list(a=obs))
-    callGeneric(as.formula(f), ...)
+    cl = match.call()
+    f = as.formula(substitute(a~1, list(a=cl[[2]])))
+    environment(f) = parent.frame()
+    callGeneric(f, ...)
 }
 
 cencen.vectors =
 function(obs, censored, groups, ...)
 {
     cl = match.call()
-    f = substitute(Cen(a, b)~1, list(a=cl[[2]], b=cl[[3]]))
-    callGeneric(as.formula(f), ...)
+    f = as.formula(substitute(Cen(a, b)~1, list(a=cl[[2]], b=cl[[3]])))
+    environment(f) = parent.frame()
+    callGeneric(f, ...)
 }
 
 cencen.vectors.groups =
@@ -117,7 +120,9 @@ function(obs, censored, groups, ...)
 {
     cl = match.call()
     f = substitute(Cen(a, b)~g, list(a=cl[[2]], b=cl[[3]], g=cl[[4]]))
-    callGeneric(as.formula(f), ...)
+    f = as.formula(f)
+    environment(f) = parent.frame()
+    callGeneric(f, ...)
 }
 ## End cencen.* routines
 
@@ -128,7 +133,7 @@ setMethod("cenfit",
 {
     sf = survfit(flip(obs), ...)
 
-    cenObj = eval.parent(obs[[2]])
+    cenObj = eval(obs[[2]], environment(obs))
     sf$time = cenObj@flipFactor - sf$time 
 
     new("cenfit", survfit=sf)

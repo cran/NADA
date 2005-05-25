@@ -1,6 +1,5 @@
 \name{ChlfmCA}
 \alias{ChlfmCA}
-\alias{chlfmca}
 \docType{data}
 \title{Chloroform concentrations in California groundwater.}
 \usage{data(ChlfmCA)}

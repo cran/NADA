@@ -1,6 +1,5 @@
 \name{SedPb}
 \alias{SedPb}
-\alias{sedpb}
 \docType{data}
 \title{Lead in stream sediments before and after wildfires}
 \usage{data(SedPb)}

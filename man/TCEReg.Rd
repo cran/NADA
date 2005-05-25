@@ -1,6 +1,5 @@
 \name{TCEReg}
 \alias{TCEReg}
-\alias{tcereg}
 \docType{data}
 \title{TCE ground waters of Long Island -- with explanatory variables}
 \usage{data(TCEReg)}

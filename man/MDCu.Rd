@@ -1,6 +1,5 @@
 \name{MDCu}
 \alias{MDCu}
-\alias{mdcu}
 \docType{data}
 \title{Copper in ground water from of San Joaquin Valley, USA}
 \usage{data(MDCu)}

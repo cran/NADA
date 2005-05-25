@@ -50,4 +50,13 @@
 %\seealso{
 %    \code{\link{cenfit}}, \code{\link{Cen}}, \code{\link{survfit}}
 %}
+\examples{
+    data(Atrazine)
+
+    cenfit(Atrazine$Atra, Atrazine$AtraCen)
+    cenfit(Atrazine$Atra, Atrazine$AtraCen, Atrazine$Month)
+
+    cenfit(Cen(Atrazine$Atra, Atrazine$AtraCen))
+    cenfit(Cen(Atrazine$Atra, Atrazine$AtraCen)~Atrazine$Month)
+}
 \keyword{methods}

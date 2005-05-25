@@ -1,6 +1,5 @@
 \name{Recon}
 \alias{Recon}
-\alias{recon}
 \docType{data}
 \title{Atrazine in streams of the Midwestern U.S.}
 \usage{data(Recon)}

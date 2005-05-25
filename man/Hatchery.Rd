@@ -1,6 +1,5 @@
 \name{Hatchery}
 \alias{Hatchery}
-\alias{hatchery}
 \docType{data}
 \title{Antibiotic concentrations in fish-hatchery drainage}
 \usage{data(Hatchery)}

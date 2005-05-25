@@ -1,6 +1,5 @@
 \name{Thames}
 \alias{Thames}
-\alias{thames}
 \docType{data}
 \title{Dieldrin, lindane and PCB in fish of the Thames River, UK}
 \usage{data(Thames)}

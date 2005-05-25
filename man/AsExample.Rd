@@ -1,7 +1,6 @@
 \name{AsExample}
 \alias{AsExample}
 \alias{AsExample}
-\alias{asexample}
 \docType{data}
 \title{Example arsenic concentrations in drinking water}
 \usage{data(AsExample)}

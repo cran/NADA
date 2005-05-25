@@ -1,6 +1,5 @@
 \name{Tbl1one}
 \alias{Tbl1one}
-\alias{tbl1one}
 \docType{data}
 \title{Contaminant concentrations in test and a control group}
 \usage{data(Tbl1one)}

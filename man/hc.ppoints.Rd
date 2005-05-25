@@ -27,7 +27,7 @@
         }
 } 
 \details{
-    The function computes Wiebull-type plotting postions of data
+    The function computes Wiebull-type plotting positions of data
     containing mixed uncensored and censored data.  The formula was first
     described by Hirsch and Stedinger (1897) and latter reformulated by
     Helsel and Cohn (1988).  It assumes that censoring is left-censoring

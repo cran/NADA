@@ -37,7 +37,7 @@
     \code{reverseT} parameters.  No transformation will be performed if either
     \code{forwardT} or \code{reverseT} are set to \code{NULL}. 
 
-    The proceedure first computes the Weibull-type plotting positions of
+    The procedure first computes the Weibull-type plotting positions of
     the combined uncensored and censored observations using a formula
     designed for multiply-censored data (see \code{hc.ppoints}).
     A linear regression is formed using the plotting positions of the

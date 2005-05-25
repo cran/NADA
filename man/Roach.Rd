@@ -1,6 +1,5 @@
 \name{Roach}
 \alias{Roach}
-\alias{roach}
 \docType{data}
 \title{Lindane in fish from tributaries of the Thames River, UK}
 \usage{data(Roach)}

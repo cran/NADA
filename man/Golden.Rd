@@ -1,6 +1,5 @@
 \name{Golden}
 \alias{Golden}
-\alias{golden}
 \docType{data}
 \title{Blood lead in organs of herons from Virginia}
 \usage{data(Golden)}

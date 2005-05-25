@@ -1,6 +1,5 @@
 \name{TCE}
 \alias{TCE}
-\alias{tce}
 \docType{data}
 \title{TCE in ground waters of Long Island, New York}
 \usage{data(TCE)}
