@@ -1,0 +1,10 @@
+
+MLE:
+    survreg
+        Y is censored var
+        X is censored varo
+            make sure 'dist' is lognormal
+
+    cenmle:
+        survreg(Surv(obs, cen)~1)
+        use Oahu data and check against NADA examples

@@ -28,6 +28,7 @@ exportMethods(
     "median",
     "quantile",
     "predict",
+    "pexceed",
     "flip",
     "lines")
 

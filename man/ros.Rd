@@ -17,8 +17,8 @@
 	        and uncensored observations.
         } 
         \item{censored}{
-            A logical vector indicating TRUE where an observation in v is
-	        censored (a less-than value) and FALSE otherwise.
+	    A logical vector indicating TRUE where an observation in
+	    \code{obs} is censored (a less-than value) and FALSE otherwise.
         } 
         \item{forwardT}{
 	        A name of a function to use for transformation prior to performing
@@ -70,7 +70,7 @@
     Lee and Helsel (in press) Baseline models of trace elements in
     major aquifers of the United States. Applied Geochemistry vol. X, pp. X-X.
 
-    Dennis R. Helsel (2004), Nondetects And Data Analasis:
+    Dennis R. Helsel (2005), Nondetects And Data Analasis:
     John Wiley and Sons, New York.
 
     Dennis R. Helsel (1990), Less Than Obvious: Statistical Methods for,

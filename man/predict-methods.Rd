@@ -4,6 +4,8 @@
 \alias{predict-methods}
 \alias{predict,cenfit-method}
 \alias{predict,ros-method}
+\alias{pexceed}
+\alias{pexceed,cenfit-method}
 \title{Methods for function predict in package NADA}
 \description{
   Functions that perform predictions using NADA model objects.
@@ -16,6 +18,8 @@
 \S4method{predict}{ros}(object, newdata, ...)
 
 \S4method{predict}{cenfit}(object, newdata, conf.int=FALSE, ...)
+
+\S4method{pexceed}{cenfit}(object, newdata, conf.int=FALSE, ...)
 } % End usage
 \arguments{
 

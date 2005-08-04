@@ -42,8 +42,8 @@ function(x, y, val, right=TRUE)
     function(x, y, val, right)
     {
         i = length(x)
-        if (val >= max(x)) return(max(y))
-        if (val <= min(x)) return(min(y))
+        if (val >= max(x)) return(NA)
+        if (val <= min(x)) return(NA)
 
         while (as.logical(i)) 
           {
@@ -197,16 +197,8 @@ setMethod("plot", signature(x="cenfit"),
                    lty  = seq(1,6), ...)
 {
     s = x@survfit
-
     firstx = (min(s$time)*axLimitFactor)
-
     plot(s, log=log, firstx=firstx, ylab=ylab, xlab=xlab, lty=lty, ...)
-
-    # Draw a vertical line at the minimum observation -- this is
-    # the lower extent of the step curve or ECDF.
-    abline(v=min(s$time))
-
-    abline(h=1.0)
 })
 
 setMethod("lines", "cenfit", function(x, ...) lines(x@survfit, ...))
@@ -251,6 +243,31 @@ setMethod("predict", signature(object="cenfit"),
         class(ret) = "NADAlist"
       }
       
+    return(ret)
+})
+
+# Public pexceed method for cenfit objects
+setMethod("pexceed", signature(object="cenfit"),
+          function(object, newdata, conf.int=FALSE) 
+{
+    ret = NULL
+    if (is.null(object@survfit$strata))
+      {
+        ret = predict(object, newdata, conf.int)
+        if (!is.data.frame(ret)) ret = 1 - ret
+        else ret[,c(2:4)] = 1 -  ret[,c(2:4)]
+      }
+    else 
+      {
+        for (i in 1:length(object@survfit$strata)) 
+          {
+            ret[[i]] = predict(object[i], newdata, conf.int)
+            if (!is.data.frame(ret)) ret[[i]] = 1 - ret[[i]]
+            else ret[[i]][,c(2:4)] = 1 -  ret[[i]][,c(2:4)]
+          }
+        names(ret) = names(object@survfit$strata)
+        class(ret) = "NADAlist"
+      }
     return(ret)
 })
 

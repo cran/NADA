@@ -47,6 +47,8 @@ setGeneric("quantile", function(x, ...) standardGeneric("quantile"))
 
 setGeneric("predict", function(object, ...) standardGeneric("predict"))
 
+setGeneric("pexceed", function(object, ...) standardGeneric("pexceed"))
+
 setGeneric("lines", function(x, ...) standardGeneric("lines"))
 
 ## Classes
