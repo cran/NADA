@@ -1,17 +1,5 @@
 \name{Cen}
 \alias{Cen}
-%\alias{is.Cen}
-%\alias{print.Cen}
-%\alias{Math.Cen}
-%\alias{Summary.Cen}
-%\alias{[.Cen}
-%\alias{format.Cen}
-%\alias{as.data.frame.Cen}
-%\alias{as.character.Cen}
-%\alias{as.formula.Cen}
-%\alias{as.model.frame.Cen}
-%\alias{is.na.Cen}
-%\alias{Ops.Cen}
 \title{
 Create a Censored Object
 }

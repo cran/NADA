@@ -1,4 +1,4 @@
-#-->> BEGIN survival analysis based functions -- "cencen" section 
+#-->> BEGIN Kaplan-Meier based functions
 
 ## Generics
 
@@ -8,130 +8,21 @@ setGeneric("cenfit",
 setGeneric("cendiff", 
            function(obs, censored, groups, ...) standardGeneric("cendiff"))
 
-setGeneric("flip", function(x) standardGeneric("flip"))
-
 ## Classes 
 
-setOldClass("Surv")
 setOldClass("survfit")
 
-setClass("Cen", representation(Surv="Surv", flipFactor="numeric"))
 setClass("cenfit", representation(survfit="survfit"))
 
 ## Methods
 
-# Begin cencen utility functions
-
-# LCL() and UCL() return string representations of 
-# the lower and upper conf limits of cenfit object ("0.95LCL")
-LCL =
-function(x) { paste(x@survfit$conf.int, "LCL", sep='') }
-
-UCL =
-function(x) { paste(x@survfit$conf.int, "UCL", sep='') }
-
-# stepfind() -- More applicable version of stats::stepfun(). 
-# Used in predict.cenfit() and quantile.cenfit().
-# Given decreasingly ordered x and y vectors of a step function, 
-# find the y value associated with any given x value.  
-# Optionally right or left looking on the number line. 
-stepfind =
-function(x, y, val, right=TRUE) 
-{
-    findStep =
-    function(x, y, val, right)
-    {
-        i = length(x)
-        if (val >= max(x)) return(NA)
-        if (val <= min(x)) return(NA)
-
-        while (as.logical(i)) 
-          {
-            if (x[i] > val || identical(all.equal(x[i], val), TRUE)) break
-            i = i - 1
-          }
-        return(ifelse(right, y[i], y[i+1]))
-    }
-
-    sapply(val, findStep, x=x, y=y, right=right)
-}
-
-## End cencen utility functions
-
-# Cen() is analgous to Surv() in survival package.
-# However, Cen() can be used in the flip() routines below to
-# rescale left-censored data into right-censored data 
-# for use in the survival package routines.
-Cen =
-function(obs, censored, type="left")
-{
-    new("Cen", Surv=Surv(obs, !censored, type=type), flipFactor = max(obs))
-}
-
-setMethod("print", signature(x="Cen"), function(x, ...) print(x@Surv))
-
-## flip() methods for rescaling input for use in survival routines.
-
-# Note that flip()ing a Cen object results in a Surv object.
-setMethod("flip", signature(x="Cen"), function(x)
-{
-    surv = x@Surv
-    # Subtract the flipFactor from all observations
-    surv[,1] = x@flipFactor - surv[,1]
-
-    # Update the censoring type
-    if (attr(surv, "type") == "right") attr(surv, "type") = "left"
-    else if (attr(surv, "type") == "left") attr(surv, "type") = "right"
-    else stop("Can only flip \"left\" or \"right\" censored Cen objects")
-
-    return(surv)
-})
-
-# flip()ing a formula just symbolically updates the 
-# response (which should be a Cen object). 
-# Result is like: flip(Cen(obs, cen))~groups
-setMethod("flip", signature(x="formula"), function(x) update(x, flip(.)~.))
-
-## Begin cencen.* functions
-# These routines are allow cenfit and cendiff methods
-# to be used with Cen objects, vectors, or formulas as input.
-# Note they all convert input to a formula and call the formula method.
-
-cencen.Cen =
-function(obs, censored, groups, ...)
-{
-    cl = match.call()
-    f = as.formula(substitute(a~1, list(a=cl[[2]])))
-    environment(f) = parent.frame()
-    callGeneric(f, ...)
-}
-
-cencen.vectors =
-function(obs, censored, groups, ...)
-{
-    cl = match.call()
-    f = as.formula(substitute(Cen(a, b)~1, list(a=cl[[2]], b=cl[[3]])))
-    environment(f) = parent.frame()
-    callGeneric(f, ...)
-}
-
-cencen.vectors.groups =
-function(obs, censored, groups, ...)
-{
-    cl = match.call()
-    f = substitute(Cen(a, b)~g, list(a=cl[[2]], b=cl[[3]], g=cl[[4]]))
-    f = as.formula(f)
-    environment(f) = parent.frame()
-    callGeneric(f, ...)
-}
-## End cencen.* routines
-
 # cenfit for formulas
 setMethod("cenfit", 
           signature(obs="formula", censored="missing", groups="missing"), 
-          function(obs, censored, groups, ...)
+          function(obs, censored, groups, conf.type, ...)
 {
-    sf = survfit(flip(obs), ...)
+    conf.type = ifelse(missing(conf.type), "plain", conf.type)
+    sf = survfit(flip(obs), conf.type=conf.type, ...)
 
     cenObj = eval(obs[[2]], environment(obs))
     sf$time = cenObj@flipFactor - sf$time 
@@ -466,6 +357,10 @@ setMethod("summary", signature(object="cenfit"),
                        s$surv, s$std.err, s$lower, s$upper)
       names(ret) = c("obs", "n.risk", "n.event", 
                      "prob", "std.err", LCL(x), UCL(x))
+
+      # The std.err in survfit object is not the real s.e.!
+      ret$std.err = ret$std.err * ret$prob
+
       return(ret)
     }
 
@@ -483,4 +378,6 @@ setMethod("summary", signature(object="cenfit"),
     return(ret)
 })
 
-#-->> END survival analysis based methods -- "cencen" section
+
+
+#-->> END Kaplan-Mier based functions

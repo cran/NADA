@@ -2,8 +2,9 @@
 \docType{methods}
 \alias{predict}
 \alias{predict-methods}
-\alias{predict,cenfit-method}
 \alias{predict,ros-method}
+\alias{predict,cenfit-method}
+\alias{predict,cenmle-method}
 \alias{pexceed}
 \alias{pexceed,cenfit-method}
 \title{Methods for function predict in package NADA}
@@ -19,7 +20,11 @@
 
 \S4method{predict}{cenfit}(object, newdata, conf.int=FALSE, ...)
 
+\S4method{predict}{cenmle}(object, newdata, conf.int=FALSE, ...)
+
 \S4method{pexceed}{cenfit}(object, newdata, conf.int=FALSE, ...)
+
+
 } % End usage
 \arguments{
 

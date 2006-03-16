@@ -2,8 +2,11 @@
 \docType{methods}
 \alias{median-methods}
 \alias{median,ANY-method}
-\alias{median,cenfit-method}
 \alias{median,ros-method}
+\alias{median,cenfit-method}
+\alias{median,cenmle-method}
+\alias{median,cenmle-lognormal-method}
+\alias{median,cenmle-gaussian-method}
 \title{Methods for function median in Package NADA}
 \description{
   Methods for computing the median using model objects in package \pkg{NADA}
@@ -12,6 +15,12 @@
 \S4method{median}{ros}(x, na.rm=FALSE, ...)
 
 \S4method{median}{cenfit}(x, na.rm=FALSE, ...)
+
+\S4method{median}{cenmle}(x, na.rm=FALSE, ...)
+
+%\S4method{median}{cenmle-lognormal}(x, na.rm=FALSE, ...)
+
+%\S4method{median}{cenmle-gaussian}(x, na.rm=FALSE, ...)
 
 } % End usage
 

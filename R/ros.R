@@ -62,6 +62,10 @@ setMethod("ros", signature(obs="numeric", censored="logical"),
 # This is provided for backward compatibility.
 lros = ros
 
+# Also, since the rest of the package is evolving to use functions
+# names like cen*
+cenros = ros
+
 #  .trueT is provided so that ros() can be used with no transforms.
 #  (It is a quick hack -- rather than recoding ros and family)
 .trueT =

@@ -1,8 +1,8 @@
 ###
 # NADA for R by Lopaka Lee.
 #
-# Version 1.2-1
-# Copyright (2004, 2005) Lopaka Lee
+# Version 1.3-0
+# Copyright (2004, 2005, 2006) Lopaka Lee
 #
 # A S-language software module based on 
 # methodologies described by Dennis R. Helsel in his book 
@@ -50,6 +50,20 @@ setGeneric("predict", function(object, ...) standardGeneric("predict"))
 setGeneric("pexceed", function(object, ...) standardGeneric("pexceed"))
 
 setGeneric("lines", function(x, ...) standardGeneric("lines"))
+
+setGeneric("residuals", function(object, ...) standardGeneric("residuals"))
+
+setGeneric("coef", function(object, ...) standardGeneric("coef"))
+
+#if (as.numeric(version$minor) < 3) {
+#    if (!isGeneric("transform"))
+#      setGeneric("transform", function(x, ...) standardGeneric("transform"))
+#} else {
+#    if (!isGeneric("transform"))
+#      setGeneric("transform", function(`_data`, ...)
+#                 standardGeneric("transform"))
+#}
+
 
 ## Classes
 

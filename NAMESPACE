@@ -1,6 +1,6 @@
 import("survival")
 
-importFrom("stats", "sd", "median", "quantile")
+importFrom("stats", "sd", "median", "quantile", "residuals", "coef")
 importFrom("graphics", "plot", "abline", "lines")
 
 export(
@@ -10,14 +10,21 @@ export(
     "Cen",
     "cenfit",
     "cendiff",
+    "cenmle",
+    "cenreg",
+    "cenros",
     "ros",
+    "lros",
     "hc.ppoints",
     "hc.ppoints.cen",
     "hc.ppoints.uncen")
 
 exportClasses(
+    "ros",
     "cenfit",
-    "ros")
+    "cenmle",
+    "cenmle-lognormal",
+    "cenmle-gaussian")
 
 exportMethods(
     "print",
@@ -30,7 +37,10 @@ exportMethods(
     "predict",
     "pexceed",
     "flip",
-    "lines")
+    "asSurv",
+    "lines",
+    "coef",
+    "residuals")
 
 S3method("as.data.frame", "ros")
 

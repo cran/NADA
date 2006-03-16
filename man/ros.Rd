@@ -1,6 +1,7 @@
 \name{ros} 
 \alias{ros} 
 \alias{lros} 
+\alias{cenros} 
 \title{Regression on Order Statistics} 
 \description{
     \code{ros} is an implementation of a Regression on Order Statistics

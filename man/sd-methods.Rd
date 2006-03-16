@@ -4,6 +4,9 @@
 \alias{sd,ANY-method}
 \alias{sd,cenfit-method}
 \alias{sd,ros-method}
+\alias{sd,cenmle-method}
+\alias{sd,cenmle-lognormal-method}
+\alias{sd,cenmle-gaussian-method}
 \title{Methods for function sd in Package NADA}
 \description{
   Methods for computing standard deviations in package \pkg{NADA} 
@@ -12,6 +15,8 @@
 \S4method{sd}{ros}(x, na.rm=FALSE)
 
 \S4method{sd}{cenfit}(x, na.rm=FALSE)
+
+\S4method{sd}{cenmle}(x, na.rm=FALSE)
 
 } % End usage
 

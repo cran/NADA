@@ -4,6 +4,7 @@
 \alias{print,ANY-method}
 \alias{print,Cen-method}
 \alias{print,cenfit-method}
+\alias{print,cenmle-method}
 \alias{print,ros-method}
 \alias{print,NADAlist-method}
 \title{Methods for function print in Package NADA}
@@ -18,6 +19,8 @@
 \item{x = "Cen"}{Displays a \code{Cen} object.}
 
 \item{x = "cenfit"}{Displays a \code{cenfit} object.}
+
+\item{x = "cenmle"}{Displays a \code{cenmle} object.}
 
 \item{x = "ros"}{Displays a \code{ros} object.}
 
