@@ -1,15 +1,15 @@
-\name{cenmle-gaussian-class}
+\name{cenreg-gaussian-class}
 \docType{class}
-\alias{cenmle-gaussian-class}
+\alias{cenreg-gaussian-class}
 
-\title{Class "cenmle-gaussian"}
+\title{Class "cenreg-gaussian"}
 \description{
-    A "cenmle-gaussian" object is returned from \code{cenmle} when a 
+    A "cenreg-gaussian" object is returned from \code{cenreg} when a 
     gaussian distribution is chosen with the `dist' option.  
 }
 \section{Objects from the Class}{
     Objects can be created by calls of the form 
-    \code{cenmle(obs, censored, dist="gaussian")}.
+    \code{cenreg(obs, censored, dist="gaussian")}.
 }
 \section{Slots}{
   \describe{
@@ -20,17 +20,13 @@
   }
 }
 \section{Extends}{
-Class \code{"cenmle"}
+Class \code{"cenreg"}
 }
 \section{Methods}{
   \describe{
-    \item{mean}{\code{signature(x = "cenmle")}: ... }
-    \item{median}{\code{signature(x = "cenmle")}: ... }
-    \item{sd}{\code{signature(x = "cenmle")}: ... }
-    %\item{predict}{\code{signature(object = "cenmle")}: ... }
-    %\item{print}{\code{signature(x = "cenmle")}: ... }
-    %\item{quantile}{\code{signature(x = "cenmle")}: ... }
-    \item{summary}{\code{signature(object = "cenmle")}: ... }
+    \item{predict}{\code{signature(object = "cenreg")}: ... }
+    \item{print}{\code{signature(x = "cenreg")}: ... }
+    \item{summary}{\code{signature(object = "cenreg")}: ... }
   }
 }
 \author{
@@ -39,7 +35,7 @@ Class \code{"cenmle"}
     Dennis Helsel <dhelsel@usgs.gov>
 } 
 \seealso{
-  \code{\link{cenmle}}
+  \code{\link{cenreg}}
   \code{\link{survreg}}
 }
 \keyword{classes}

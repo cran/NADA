@@ -104,6 +104,8 @@ censored environmental data.  John Wiley and Sons, USA, NJ.
 
 \author{
     Lopaka(Rob) Lee <rclee@usgs.gov>
+
+    Dennis Helsel <dhelsel@usgs.gov>
 } 
 \seealso{
     \code{\link{cenfit}},

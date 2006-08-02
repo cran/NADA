@@ -1,4 +1,4 @@
-#-->> BEGIN Maximum Likelihood Estimation (MLE) Regression section
+#-->> BEGIN Maximum Likelihood Estimation FOR SUMMARY STATISTICS section
 
 ## Generics
 
@@ -7,150 +7,206 @@ setGeneric("cenmle",
 
 ## Classes
 
-setOldClass("survreg")
+setClass("cenmle", representation("cenreg"))
 
-setClass("cenmle", representation(survreg="survreg"))
 setClass("cenmle-gaussian", representation("cenmle"))
 setClass("cenmle-lognormal", representation("cenmle"))
 
-## Core Methods
+## Methods
 
-# This keeps things orthogonal with the survival package
-cenreg = cenmle
-
-setMethod("cenmle",
-          signature(obs="formula", censored="missing", groups="missing"),
-                    function(obs, censored, groups, dist, ...)
+new_cenmle = 
+function(x)
 {
-    dist = ifelse(missing(dist), "lognormal", dist)
-    switch(dist,
-        gaussian  = new_cenmle_gaussian(obs, dist, ...),
-        lognormal = new_cenmle_lognormal(obs, dist, ...),
-        survreg(asSurv(obs), dist=dist, ...)
-    )
-})
+    if      (is(x, "cenreg-gaussian")) ret = new("cenmle-gaussian", x)
+    else if (is(x, "cenreg-lognormal")) ret = new("cenmle-lognormal", x)
+    else    stop("Unrecognized distribution") # This shouldn't happen
+
+    return(ret)
+}
 
 setMethod("cenmle", 
           signature(obs="Cen", censored="missing", groups="missing"), 
-          cencen.Cen)
+          function(obs, censored, groups, ...)
+{
+    cl = match.call()
+    f = as.formula(substitute(a~1, list(a=cl[[2]])))
+    environment(f) = parent.frame()
+    new_cenmle(cenreg(f, ...))
+})
 
 setMethod("cenmle",
           signature(obs="numeric", censored="logical", groups="missing"),
-                    cencen.vectors)
+          function(obs, censored, groups, ...)
+{
+    cl = match.call()
+    f = as.formula(substitute(Cen(a, b)~1, list(a=cl[[2]], b=cl[[3]])))
+    environment(f) = parent.frame()
+    new_cenmle(cenreg(f, ...))
+})
+
 
 setMethod("cenmle", 
           signature(obs="numeric", censored="logical", groups="factor"), 
-          cencen.vectors.groups)
-
-setMethod("summary", signature(object="cenmle"), function(object, ...)
+          function(obs, censored, groups, ...)
 {
-    # To do: modify the call object to reflect the NADA call
-    # for now, just nullify it -- users typically remember the call.
-    object@survreg$call = NULL
-    summary(object@survreg, ...)
+    cl = match.call()
+    f = substitute(Cen(a, b)~g, list(a=cl[[2]], b=cl[[3]], g=cl[[4]]))
+    f = as.formula(f)
+    environment(f) = parent.frame()
+    cenreg(f, ...)
+})
+
+setMethod("cenmle", 
+          signature(obs="numeric", censored="logical", groups="numeric"), 
+          function(obs, censored, groups, ...)
+{
+    cl = match.call()
+    f = substitute(Cen(a, b)~g, list(a=cl[[2]], b=cl[[3]], g=cl[[4]]))
+    f = as.formula(f)
+    environment(f) = parent.frame()
+    cenreg(f, ...)
 })
 
 setMethod("print", signature(x="cenmle"), function(x, ...)
 {
-    print(summary(x, ...))
-
-    ## This is nice, but it doesn't work with strata
-    #ret = c(mean(x), median(x), sd(x))
-    #names(ret) = c("mean", "median", "sd")
-    #print(ret)
-    #invisible(ret)
-})
-
-
-setMethod("predict", signature(object="cenmle"), summary) 
-
-#setMethod("predict", signature(object="cenmle"), 
-#          function(object, newdata, conf.int=FALSE, ...)
-#{
-#    predict(object@survreg, newdata, ...)
-#})
-
-setMethod("residuals", signature(object="cenmle"), function(object, ...)
-{
-    residuals(object@survreg, ...)
-})
-
-setMethod("coef", signature(object="cenmle"), function(object, ...)
-{
-    coef(object@survreg, ...)
+    ret = c(x@n, x@n.cen, median(x), mean(x)[1], sd(x)) 
+    names(ret) = c("n", "n.cen", "median", "mean", "sd")
+    print(ret)
+    invisible(ret)
 })
 
 setMethod("median", signature(x="cenmle-lognormal"), function(x, na.rm=FALSE)
 {
-    # To do: remove NAs?
-    as.vector(exp(x@survreg$coef))
+    as.vector(exp(x@survreg$coef[1]))
 })
 
 setMethod("sd", signature(x="cenmle-lognormal"), function(x, na.rm=FALSE)
 {
-    # To do: remove NAs?
-    ret = exp(2*x@survreg$coef + x@survreg$scale^2)*(exp(x@survreg$scale^2)-1)
-    as.vector(sqrt(ret))
+    coef  = as.vector(x@survreg$coef[1])
+    scale = x@survreg$scale[1]
+
+    sqrt(exp(2*coef + scale^2)*(exp(scale^2)-1))
+})
+
+setMethod("quantile", signature(x="cenmle-lognormal"),
+          function(x, probs = NADAprobs, conf.int = FALSE, ...)
+{
+    q = probs
+
+    int    = as.vector(x@survreg$coef[1])
+    scale  = x@survreg$scale
+
+    qhat = exp(int + (qnorm(q) * scale))
+
+    if (!conf.int) 
+      {
+        ret = qhat
+        names(ret) = 
+          paste(formatC(100 * q, format = "fg", wid = 1), "%", sep='')
+      }
+    else
+      {
+        semean = sqrt(x@survreg$var[1,1])
+        cov    = x@survreg$var[2,1] * scale
+        varsig = x@survreg$var[2,2] * scale^2
+
+        se = qhat * sqrt(semean^2 + 2*qnorm(q)*cov + (qnorm(q)^2) * varsig)
+
+        # Two-sided conf int
+        p = 1-((1-x@conf.int)/2)
+        z = qnorm(p)
+
+        w = exp((z*se)/qhat)
+
+        lcl = qhat/w
+        ucl = qhat*w
+
+        ret = data.frame(q, qhat, lcl, ucl)
+        names(ret) = c("quantile", "value", LCL(x), UCL(x))
+      }
+
+    return(ret)
+})
+
+setMethod("quantile", signature(x="cenmle-gaussian"),
+          function(x, probs = NADAprobs, conf.int = FALSE, ...)
+{
+    q = probs
+
+    int   = as.vector(x@survreg$coef[1])
+    scale = x@survreg$scale
+
+    ncp = qnorm(q)
+
+    qhat = int + (ncp * scale)
+
+    if (!conf.int) ret = qhat
+    else
+      {
+        n  = length(x@survreg$linear.predictors)
+        se = sqrt((scale^2)/n)
+
+        # Two-sided conf int
+        p = 1-((1-x@conf.int)/2)
+        z = qt(p, n-1, abs(ncp))
+
+        lcl = qhat - (z * se)
+        ucl = qhat + (z * se)
+
+        ret = data.frame(q, qhat, lcl, ucl)
+        names(ret) = c("quantile", "value", LCL(x), UCL(x))
+      }
+
+    return(ret)
 })
 
 setMethod("mean", signature(x="cenmle-lognormal"), function(x, na.rm=FALSE)
 {
-    # To do: remove NAs?
-    as.vector(exp(x@survreg$coef + 0.5*(x@survreg$scale)^2))
+    # Two-sided conf int
+    p = 1-((1-x@conf.int)/2)
+
+    n     = length(x@survreg$linear.predictors)
+    int   = as.vector(x@survreg$coef[1])
+    scale = x@survreg$scale
+
+    xbar = as.vector(exp(int + 0.5*(scale)^2))
+    se   = sqrt(x@survreg$var[1,1])
+
+    gamz = qnorm(p) * sqrt((scale^2/n) + (((0.5)*scale^4)/(n+1)))
+    bhat = log(xbar)
+
+    ret = c(xbar, se, exp(bhat - gamz), exp(bhat + gamz))
+    names(ret) = c("mean", "se", LCL(x), UCL(x))
+
+    return(ret)
 })
 
 setMethod("median", signature(x="cenmle-gaussian"), function(x, na.rm=FALSE)
 {
-    # To do: remove NAs?
-    as.vector(x@survreg$coef)
+    as.vector(x@survreg$coef[1])
 })
 
 setMethod("sd", signature(x="cenmle-gaussian"), function(x, na.rm=FALSE)
 {
-    # To do: remove NAs?
     as.vector(x@survreg$scale)
 })
 
 setMethod("mean", signature(x="cenmle-gaussian"), function(x, na.rm=FALSE)
 {
-    # To do: remove NAs?
-    as.vector(x@survreg$coef)
+    # The mean is the intercept
+    int = as.vector(x@survreg$coef[1])
+
+    # The standard error of the intercept/mean
+    se = sqrt(x@survreg$var[1,1])
+
+    # Two-sided conf int
+    p = 1-((1-x@conf.int)/2)
+    gamz = qnorm(p) * se
+
+    ret = c(int, se, (int - gamz), (int + gamz))
+    names(ret) = c("mean", "se", LCL(x), UCL(x))
+
+    return(ret)
 })
 
-
-## Supporting Functions 
-
-# cenmle for lognormal distributions
-
-new_cenmle_lognormal =
-function(formula, dist, ...)
-{
-    new("cenmle-lognormal", survreg=survreg(asSurv(formula), dist=dist, ...))
-}
-
-# cenmle for gaussian, or normal, distributions
-
-# If a normal distribution is assumed the input data must be expressed
-# as an interval between zero and the DL.  They cannot simply be stated as
-# 'left' censored, because that allows some probability of going below 0,
-# and estimates will be biased low and wrong.  So with the normal option
-# and left censoring, internally we must use interval censoring.  The end of
-# the interval are the detected values.  The start of the interval will
-# have identical numbers in it for the detects, and a 0 for the 
-# nondetects (a simple trick is: start = obs - obs * censored).
-
-new_cenmle_gaussian =
-function(formula, dist, ...)
-{
-    obs      = formula[[2]][[2]]
-    censored = formula[[2]][[3]]
-    groups   = formula[[3]]
-
-    f = as.formula(substitute(Surv(o - o * c, o, type="interval2")~g, 
-                                   list(o=obs, c=censored, g=groups)))
-    environment(f) = parent.frame()
-    new("cenmle-gaussian", survreg=survreg(f, dist=dist, ...))
-}
-
-#-->> END Regression on Maximum Likelihood Estimation (MLE) section
-
+#-->> END Maximum Likelihood Estimation FOR SUMMARY STATISTICS section

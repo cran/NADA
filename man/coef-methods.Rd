@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{coef-methods}
 \alias{coefficents-methods}
-\alias{coef,cenmle-method}
+\alias{coef,cenreg-method}
 \title{Methods for function coef in package NADA}
 \description{
   Methods for extracting coefficients from 
@@ -11,18 +11,18 @@
 \usage{
 %\S4method{coef}{ros}(object, ...)
 
-\S4method{coef}{cenmle}(object, ...)
+\S4method{coef}{cenreg}(object, ...)
 
 } % End usage
 
 \arguments{
 
 \item{object}{
-    An output object from a NADA function such as \code{\link{cenmle}}.
+    An output object from a NADA function such as \code{\link{cenreg}}.
 }
 \item{...}{Additional parameters to subclasses -- currently none}
 
 } % End arguments
-\seealso{\code{\link{cenmle}}}
+\seealso{\code{\link{cenreg}}}
 
 \keyword{methods}

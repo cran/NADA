@@ -35,14 +35,17 @@
         Indexes of unqualified values (ie., where qual.symbol was not matched)
     }
 }
-%\references{
-%
-%    Lee and Helsel (in press), Statistical analysis of environmental data
-%    containing multiple detection limits: S-language software for
-%    regression on order statistics, Computers in Geoscience vol. X, pp. X-X
-%} 
+\references{
+
+    Lee and Helsel (2005), Statistical analysis of environmental data
+    containing multiple detection limits: S-language software for
+    regression on order statistics, Computers in Geoscience vol. 31,
+    pp. 1241-1248
+} 
 \author{
     Lopaka(Rob) Lee <rclee@usgs.gov>
+
+    Dennis Helsel <dhelsel@usgs.gov>
 } 
 \examples{
     v = c('<1', 1, '<1', 1, 2)

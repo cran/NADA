@@ -64,12 +64,14 @@
 } 
 \references{
 
-    Lee and Helsel (in press) Statistical analysis of environmental data
-    containing multiple detection limits: S-language software for linear
-    regression on order statistics, Computers in Geoscience vol. X, pp. X-X
+    Lee and Helsel (2005) Statistical analysis of environmental data
+    containing multiple detection limits: S-language software for
+    regression on order statistics, Computers in Geoscience vol. 31,
+    pp. 1241-1248.
 
-    Lee and Helsel (in press) Baseline models of trace elements in
-    major aquifers of the United States. Applied Geochemistry vol. X, pp. X-X.
+    Lee and Helsel (2005) Baseline models of trace elements in major
+    aquifers of the United States. Applied Geochemistry vol. 20,
+    pp. 1560-1570.
 
     Dennis R. Helsel (2005), Nondetects And Data Analasis:
     John Wiley and Sons, New York.
@@ -84,6 +86,8 @@
 } 
 \author{
     Lopaka(Rob) Lee <rclee@usgs.gov>
+
+    Dennis Helsel <dhelsel@usgs.gov>
 } 
 \seealso{
     \code{\link{splitQual}}, 

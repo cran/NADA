@@ -43,6 +43,8 @@ Class \code{"vector"}, by class \code{"list"}.
 }
 \author{
     Lopaka(Rob) Lee <rclee@usgs.gov>
+
+    Dennis Helsel <dhelsel@usgs.gov>
 } 
 \seealso{
   \code{\link{ros}}

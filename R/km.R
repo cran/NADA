@@ -16,6 +16,21 @@ setClass("cenfit", representation(survfit="survfit"))
 
 ## Methods
 
+setMethod("LCL", 
+          signature(x="cenfit"),
+          function(x) 
+{ 
+    paste(x@survfit$conf.int, "LCL", sep='') 
+})
+
+setMethod("UCL", 
+          signature(x="cenfit"),
+          function(x) 
+{ 
+    paste(x@survfit$conf.int, "UCL", sep='') 
+})
+
+
 # cenfit for formulas
 setMethod("cenfit", 
           signature(obs="formula", censored="missing", groups="missing"), 
@@ -49,7 +64,6 @@ setMethod("cendiff",
 {
     x = survival::survdiff(flip(obs), rho=rho, ...)
     # To do: modify the call object to reflect cenfit call
-    # for now, just nullify it -- users typically remember the call.
     x$call = NULL
     return(x)
 })
@@ -89,7 +103,9 @@ setMethod("plot", signature(x="cenfit"),
 {
     s = x@survfit
     firstx = (min(s$time)*axLimitFactor)
-    plot(s, log=log, firstx=firstx, ylab=ylab, xlab=xlab, lty=lty, ...)
+
+    plot(s, mark.time=FALSE, log=log, firstx=firstx, 
+         ylab=ylab, xlab=xlab, lty=lty, ...)
 })
 
 setMethod("lines", "cenfit", function(x, ...) lines(x@survfit, ...))
@@ -131,7 +147,7 @@ setMethod("predict", signature(object="cenfit"),
             ret[[i]] = .predict.cenfit(object[i], newdata, conf.int)
           }
         names(ret) = names(s$strata)
-        class(ret) = "NADAlist"
+        class(ret) = "NADAList"
       }
       
     return(ret)
@@ -142,22 +158,30 @@ setMethod("pexceed", signature(object="cenfit"),
           function(object, newdata, conf.int=FALSE) 
 {
     ret = NULL
+
+    predict2pexceed =
+    function(x) 
+    {
+      if (!is.data.frame(x)) x = 1 - x
+      else {
+        x[,c(2:4)] = 1 - x[,c(2:4)]
+        x[,c(3:4)] = x[,c(4:3)]
+      }
+      return(x)
+    }
+
     if (is.null(object@survfit$strata))
       {
-        ret = predict(object, newdata, conf.int)
-        if (!is.data.frame(ret)) ret = 1 - ret
-        else ret[,c(2:4)] = 1 -  ret[,c(2:4)]
+        ret = predict2pexceed(predict(object, newdata, conf.int))
       }
     else 
       {
         for (i in 1:length(object@survfit$strata)) 
           {
-            ret[[i]] = predict(object[i], newdata, conf.int)
-            if (!is.data.frame(ret)) ret[[i]] = 1 - ret[[i]]
-            else ret[[i]][,c(2:4)] = 1 -  ret[[i]][,c(2:4)]
+            ret[[i]] = predict2pexceed(predict(object[i], newdata, conf.int))
           }
         names(ret) = names(object@survfit$strata)
-        class(ret) = "NADAlist"
+        class(ret) = "NADAList"
       }
     return(ret)
 })
@@ -183,7 +207,7 @@ function(x, newdata, conf.int=FALSE)
 
         ret = data.frame(newdata, quan, quan.l, quan.u)
 
-        names(ret) = c("quantile", "obs", LCL(x), UCL(x))
+        names(ret) = c("quantile", "value", LCL(x), UCL(x))
       }
 
     return(ret)
@@ -204,7 +228,7 @@ setMethod("quantile", signature(x="cenfit"),
             ret[[i]] = .quantile.cenfit(x[i], probs, conf.int)
           }
         names(ret) = names(s$strata)
-        class(ret) = "NADAlist"
+        class(ret) = "NADAList"
       }
 
     return(ret)
@@ -213,9 +237,9 @@ setMethod("quantile", signature(x="cenfit"),
 # Private mean method for cenfit objects -- does not handle strata!
 # Given a cenfit or survfit object returns the calculated mean and se(mean)
 .mean.cenfit =
-function(x)
+function(xx)
 {
-    x = x@survfit
+    x = xx@survfit
 
     stime   = x$time
     surv    = x$surv
@@ -252,8 +276,17 @@ function(x)
         varmean = c(hh %*% temp^2)
       }
 
-    ret = c(sum(mean), sqrt(varmean))
-    names(ret) = c("rmean", "se(rmean)")
+    # Two-sided conf interval
+    p = 1-((1-x$conf.int)/2)
+    z = qnorm(p)
+
+    mean = sum(mean)
+    mean.se = sqrt(varmean)
+    mean.lcl = mean - mean.se * z
+    mean.ucl = mean + mean.se * z
+
+    ret = c(mean, mean.se, mean.lcl, mean.ucl)
+    names(ret) = c("mean", "se", LCL(xx), UCL(xx))
 
     return(ret)
 }
@@ -269,17 +302,9 @@ setMethod("mean", signature(x="cenfit"), function(x, ...)
       {
         for (i in 1:length(s$strata)) ret[[i]] = .mean.cenfit(x[i])
         names(ret) = names(s$strata)
-        class(ret) = "NADAlist"
+        class(ret) = "NADAList"
       }
 
-    return(ret)
-})
-
-setMethod("median", signature(x="cenfit"), function(x, na.rm=FALSE)
-{
-    # To do: remove NAs?
-    ret = as.vector(quantile(x, 0.5))
-    names(ret) = names(x@survfit$strata)
     return(ret)
 })
 
@@ -303,6 +328,15 @@ setMethod("sd", signature(x="cenfit"), function(x, na.rm=FALSE)
     return(ret)
 })
 
+
+setMethod("median", signature(x="cenfit"), function(x, na.rm=FALSE)
+{
+    # To do: remove NAs?
+    ret = as.vector(quantile(x, 0.5))
+    names(ret) = names(x@survfit$strata)
+    return(ret)
+})
+
 setMethod("print", signature(x="cenfit"), function(x, ...)
 {
     s = x@survfit
@@ -315,13 +349,14 @@ setMethod("print", signature(x="cenfit"), function(x, ...)
       n      = s$n
       cen    = s$n - sum(s$n.event)
       median = median(x)
-      mean   = mean(x)
+      mean   = mean(x)[1]
+      sd     = sd(x)
 
-      return(c(n, cen, median, mean))
+      return(c(n, cen, median, mean, sd))
     }
 
     ret = NULL
-    tag = c("n", "n.cen", "median", "mean", "se(mean)")
+    tag = c("n", "n.cen", "median", "mean", "sd")
 
     if (is.null(s$strata))
       {
@@ -372,12 +407,40 @@ setMethod("summary", signature(object="cenfit"),
       {
         for (i in 1:length(s$strata)) ret[[i]] = strataSummary(object[i])
         names(ret) = names(s$strata)
-        class(ret) = "NADAlist"
+        class(ret) = "NADAList"
       }
 
     return(ret)
 })
 
+## KM utility functions
 
+# stepfind() -- More applicable version of stats::stepfun(). 
+# Used in predict.cenfit() and quantile.cenfit().
+# Given decreasingly ordered x and y vectors of a step function, 
+# find the y value associated with any given x value.  
+# Optionally right or left looking on the number line. 
+stepfind =
+function(x, y, val, right=TRUE) 
+{
+    findStep =
+    function(x, y, val, right)
+    {
+        i = length(x)
+        if (val >= max(x)) return(NA)
+        if (val <= min(x)) return(NA)
+
+        while (as.logical(i)) 
+          {
+            if (x[i] > val || identical(all.equal(x[i], val), TRUE)) break
+            i = i - 1
+          }
+        return(ifelse(right, y[i], y[i+1]))
+    }
+
+    sapply(val, findStep, x=x, y=y, right=right)
+}
+
+## End KM utility functions
 
 #-->> END Kaplan-Mier based functions

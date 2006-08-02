@@ -1,6 +1,5 @@
 \name{cenmle}
 \alias{cenmle}
-\alias{cenreg}
 \title{
     Regression by Maximum Likelihood Estimation for Left-censored Data
 }
@@ -22,7 +21,9 @@
      tests, a probability plot of residuals should be checked to ensure
      that residuals from the regression model are approximately gaussian.
 }
-\synopsis{cenmle(obs, censored, groups, ...)}
+\synopsis{
+    cenmle(obs, censored, groups, ...)
+}
 \usage{
     cenmle(obs, censored, groups, ...)
 }
@@ -41,18 +42,27 @@
 \item{...}{
     Additional items that are common to this function and the \code{survreg}
     function from the `survival' package.  The most important of which
-    is `dist' (distribution to use).  See Details below.
+    is `dist' and `conf.int'.  See Details below.
 }
-} %arguments
+} %END arguments
 \details{
     This routine is a front end to the \code{survreg} routine in the
     \code{survival} package.  
     
     There are many additional options that are supported and documented
-    in \code{survfit}.  Only a few have application to the geosciences.
+    in \code{survfit}.  Only a few have relevance to the evironmental
+    sciences.
 
-    The most important option is `dist' which specifies the distributional
+    A very important option is `dist' which specifies the distributional
     model to use in the regression.  The default is `lognormal'.  
+
+    Another important option is `conf.int'.  This is NOT an option to
+    \code{survreg} but is an added feature (due to some arcane details of
+    R it can't be documented above).  The `conf.int' option specifies
+    the level for a two-sided confidence interval on the regression.
+    The default is 0.95.  This interval will be used in when the output
+    object is passed to other generic functions such as \code{mean}
+    and \code{quantile}.  See Examples below.
 
     Also supported is a `gaussian' or a normal distribution.  The use of
     a gaussian distribution requires an interval censoring context for
@@ -82,15 +92,16 @@ censored environmental data.  John Wiley and Sons, USA, NJ.
 }
 \author{
     Lopaka(Rob) Lee <rclee@usgs.gov>
+
+    Dennis Helsel <dhelsel@usgs.gov>
 } 
 \seealso{
-%    \code{\link{cenmle-methods}},
     \code{\link{Cen}}, 
+    \code{\link{cenmle-methods}},
     \code{\link{mean-methods}}, 
     \code{\link{sd-methods}}, 
     \code{\link{median-methods}}, 
-%    \code{\link{quantile-methods}}, 
-%    \code{\link{predict-methods}}, 
+    \code{\link{quantile-methods}}, 
     \code{\link{summary-methods}} 
 }
 
@@ -100,27 +111,18 @@ censored environmental data.  John Wiley and Sons, USA, NJ.
 
     data(TCEReg)
 
-    obs      = TCEReg$TCEConc 
-    censored = TCEReg$TCECen
+    tcemle = with(TCEReg, cenmle(TCEConc, TCECen)) 
 
-    mycenmle = cenmle(obs, censored) 
+    summary(tcemle)
+    median(tcemle)
+    mean(tcemle)
+    sd(tcemle)
+    quantile(tcemle)
 
-    summary(mycenmle)
-    median(mycenmle)
-    mean(mycenmle)
-    sd(mycenmle)
+    # Use the model's confidence interval
+    quantile(tcemle, conf.int=TRUE)
 
     # With groupings
-    groups = as.factor(TCEReg$LandUse)
-    cenmle(obs, censored, groups)
-    
-    # Formula interface -- no groups
-    cenmle(Cen(obs, censored)) 
-    # assume a gaussian distribution
-    #cenmle(Cen(obs, censored), dist="gaussian") 
-
-    # Formula interface -- a complicated regression
-    attach(TCEReg)
-    cenmle(Cen(TCEConc, TCECen)~PopDensity+PctIndLU+Depth)
+    with(TCEReg, cenmle(TCEConc, TCECen, PopDensity)) 
 }
 \keyword{survival}

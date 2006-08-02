@@ -1,13 +1,13 @@
 \name{NADA-internal}
 \title{Internal NADA Objects}
-\alias{.trueT}
-\alias{.cohnN}
+\alias{trueT}
+\alias{cohn}
 \description{
   Internal NADA functions.
 }
 \usage{
-.trueT(x)
-.cohnN(uncen, cen)
+trueT(x)
+cohn(obs, censored)
 }
 
 \details{

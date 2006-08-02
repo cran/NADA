@@ -1,20 +1,25 @@
 import("survival")
 
-importFrom("stats", "sd", "median", "quantile", "residuals", "coef")
-importFrom("graphics", "plot", "abline", "lines")
+importFrom("stats", "sd", "median", "quantile", "residuals", "coef", "cor")
+importFrom("graphics", "plot", "abline", "lines", "boxplot")
 
 export(
     "NADAprobs",
     "splitQual",
-    "pct.censored",
+    "pctCen",
     "Cen",
     "cenfit",
     "cendiff",
     "cenmle",
     "cenreg",
     "cenros",
+    "cenken",
+#    "kendallATS",
+    "cenboxplot",
+    "cenxyplot",
+    "censummary",
+    "censtats",
     "ros",
-    "lros",
     "hc.ppoints",
     "hc.ppoints.cen",
     "hc.ppoints.uncen")
@@ -22,25 +27,34 @@ export(
 exportClasses(
     "ros",
     "cenfit",
+    "cenreg",
+    "cenreg-lognormal",
+    "cenreg-gaussian",
     "cenmle",
     "cenmle-lognormal",
-    "cenmle-gaussian")
+    "cenmle-gaussian",
+    "summary.cenreg")
 
 exportMethods(
     "print",
     "plot",
+    "boxplot",
     "summary",
     "mean",
     "sd",
     "median",
+#    "min",
+#    "max",
     "quantile",
     "predict",
     "pexceed",
     "flip",
     "asSurv",
     "lines",
+#    "abline",
     "coef",
-    "residuals")
+    "residuals",
+    "cor")
 
 S3method("as.data.frame", "ros")
 
