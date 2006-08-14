@@ -3,7 +3,7 @@
 ## Generics
 
 setGeneric("cenmle",
-  function(obs, censored, groups, ...) standardGeneric("cenmle"))
+           function(obs, censored, groups, ...) standardGeneric("cenmle"))
 
 ## Classes
 
@@ -31,7 +31,7 @@ setMethod("cenmle",
     cl = match.call()
     f = as.formula(substitute(a~1, list(a=cl[[2]])))
     environment(f) = parent.frame()
-    new_cenmle(cenreg(f, ...))
+    new_cenmle(eval.parent(cenreg(f, ...)))
 })
 
 setMethod("cenmle",
@@ -41,9 +41,8 @@ setMethod("cenmle",
     cl = match.call()
     f = as.formula(substitute(Cen(a, b)~1, list(a=cl[[2]], b=cl[[3]])))
     environment(f) = parent.frame()
-    new_cenmle(cenreg(f, ...))
+    new_cenmle(eval.parent(cenreg(f, ...)))
 })
-
 
 setMethod("cenmle", 
           signature(obs="numeric", censored="logical", groups="factor"), 
@@ -53,7 +52,7 @@ setMethod("cenmle",
     f = substitute(Cen(a, b)~g, list(a=cl[[2]], b=cl[[3]], g=cl[[4]]))
     f = as.formula(f)
     environment(f) = parent.frame()
-    cenreg(f, ...)
+    eval.parent(cenreg(f, ...))
 })
 
 setMethod("cenmle", 
@@ -64,7 +63,7 @@ setMethod("cenmle",
     f = substitute(Cen(a, b)~g, list(a=cl[[2]], b=cl[[3]], g=cl[[4]]))
     f = as.formula(f)
     environment(f) = parent.frame()
-    cenreg(f, ...)
+    eval.parent(cenreg(f, ...))
 })
 
 setMethod("print", signature(x="cenmle"), function(x, ...)
@@ -162,9 +161,6 @@ setMethod("quantile", signature(x="cenmle-gaussian"),
 
 setMethod("mean", signature(x="cenmle-lognormal"), function(x, na.rm=FALSE)
 {
-    # Two-sided conf int
-    p = 1-((1-x@conf.int)/2)
-
     n     = length(x@survreg$linear.predictors)
     int   = as.vector(x@survreg$coef[1])
     scale = x@survreg$scale
@@ -172,6 +168,8 @@ setMethod("mean", signature(x="cenmle-lognormal"), function(x, na.rm=FALSE)
     xbar = as.vector(exp(int + 0.5*(scale)^2))
     se   = sqrt(x@survreg$var[1,1])
 
+    # Two-sided conf int
+    p = 1-((1-x@conf.int)/2)
     gamz = qnorm(p) * sqrt((scale^2/n) + (((0.5)*scale^4)/(n+1)))
     bhat = log(xbar)
 

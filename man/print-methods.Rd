@@ -6,6 +6,7 @@
 \alias{print,cenfit-method}
 \alias{print,cenmle-method}
 \alias{print,cenreg-method}
+\alias{print,censummary-method}
 \alias{print,summary.cenreg-method}
 \alias{print,ros-method}
 \alias{print,NADAList-method}
@@ -18,17 +19,19 @@
 
 \item{x = "ANY"}{Default print method}
 
-\item{x = "Cen"}{Displays a \code{Cen} object.}
+\item{x = "Cen"}{Displays a \code{\link{Cen}} object.}
 
-\item{x = "cenfit"}{Displays a \code{cenfit} object.}
+\item{x = "cenfit"}{Displays a \code{\link{cenfit}} object.}
 
-\item{x = "cenmle"}{Displays a \code{cenmle} object.}
+\item{x = "cenmle"}{Displays a \code{\link{cenmle}} object.}
 
-\item{x = "cenreg"}{Displays a \code{cenreg} object.}
+\item{x = "cenreg"}{Displays a \code{\link{cenreg}} object.}
 
-\item{x = "summary.cenreg"}{Displays a \code{summary.cenreg} object.}
+\item{x = "summary.cenreg"}{Displays a \code{\link{summary.cenreg}} object.}
 
-\item{x = "ros"}{Displays a \code{ros} object.}
+\item{x = "ros"}{Displays a \code{\link{ros}} object.}
+
+\item{x = "censummary"}{Displays a \code{\link{censummary}} object.}
 
 \item{x = "NADAList"}{Displays a \code{NADAList} object.  This is an
 internal method and should rarely be used from the command line.}

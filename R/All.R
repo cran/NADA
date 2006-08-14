@@ -28,9 +28,9 @@
 .onLoad = function(lib, pkg) 
 {
     require(methods)
-    #library.dynam("NADA", pkg, lib)
 }
 
+# These probabilities are the used as defaults in methods like quantile.
 NADAprobs = c(0.05,0.10,0.25,0.50,0.75,0.90,0.95)
 
 ## Generics
@@ -108,92 +108,20 @@ setMethod("print", signature("NADAList"), function(x, ...)
       }
 })
 
-# Dennis' censored boxplots 
-cenboxplot =
-function(obs, censored, group, log=TRUE, range=0, ...) 
-{
-  if (log) log="y"
-  else     log=""
-
-  if (missing(group)) ret = boxplot(obs, log=log, range=range, ...)
-  else                 ret = boxplot(obs~group, log=log, range=range, ...)
-
-  # Draw horiz line at max censored value
-  abline(h=max(obs[censored])) 
-
-  invisible(ret)
-}
-
-# Dennis' censored xy plots -- need to fix this
-cenxyplot =
-function(x, xcen, y, ycen, log="xy", ...) 
-{
-    # Setup plot
-    plot(x, y, log=log, type="n", ...)
-    # Plot uncensored values
-    points(x[!ycen], y[!ycen], ...)
-    # Plot censored values
-    points(x[ycen], y[ycen], ...)
-}
-
-# A first-cut at a summay function for censored data.  To do: groups.
-censummary =
-function(obs, censored) 
-{
-    smry = 
-    function(obs, cen)
-    {
-        ret = cohn(obs, censored)
-
-        ret$n = length(obs)
-        ret$n.cen = length(obs[censored])
-
-        cat("Summary:\n")
-        props = c(ret$n, ret$n.cen, pctCen(obs, censored), min(obs), max(obs))
-        names(props) = c("n", "n.cen", "pct.cen", "min", "max")
-        print(props)
-
-        limits = t(data.frame(ret$C, ret$A, ret$P))
-        colnames(limits) = ret$limit
-        rownames(limits) = c("C", "A", "P")
-
-        cat("\nThresholds and counts:\n")
-        print(limits["C",])
-
-        cat("\nUncensored between each threshold:\n")
-        print(limits["A",])
-
-        cat("\nROS probability of exceeding each threshold:\n")
-        print(limits["P",])
-    }
-    ret = smry(obs, censored)
-
-    invisible(ret)
-}
-
-# Broken until I can figure out the eval.parent problem in cenreg
-censtats =
-function(obs, censored) 
-{
-    #stop("This convenience function is currently broken ... sorry")
-
-    skm  = cenfit(obs, censored)
-    sros = cenros(obs, censored)
-    smle = cenmle(obs, censored)
-
-    med  = c(median(skm), median(sros), median(smle))
-    sd   = c(sd(skm), sd(sros), sd(smle)[1])
-    mean = c(mean(skm)[1], mean(sros), mean(smle)[1])
-
-    len = c(length(obs), length(which(censored == T)), pctCen(obs, censored))
-    names(len) = c("n", "n.cen", "pct.cen")
-    print(len)
-
-    data.frame(median=med, mean=mean, sd=sd, row.names=c("K-M", "ROS", "MLE"))
-}
-
-
 #-->> BEGIN general utility functions
+
+# Returns par("usr") transformed if in log units
+cenpar.usr = 
+function(log)
+{
+    usr = par("usr")
+    switch(log,
+        xy = (usr = 10^usr),
+        x  = (usr[1:2] = 10^usr[1:2]),
+        y  = (usr[3:4] = 10^usr[3:4])
+    )
+    return(usr)
+}
 
 ##
 # split_qual extracts qualifed and unqualifed vectors from a vector

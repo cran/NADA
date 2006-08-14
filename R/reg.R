@@ -21,18 +21,10 @@ setClass("summary.cenreg", representation("list"))
 ## Methods
 
 setMethod("LCL", 
-          signature(x="cenreg"),
-          function(x) 
-{ 
-    paste(x@conf.int, "LCL", sep='') 
-})
+          signature(x="cenreg"), function(x) paste(x@conf.int, "LCL", sep=''))
 
 setMethod("UCL", 
-          signature(x="cenreg"),
-          function(x) 
-{ 
-    paste(x@conf.int, "UCL", sep='') 
-})
+          signature(x="cenreg"), function(x) paste(x@conf.int, "UCL", sep=''))
 
 # The generic formula method that is called from below
 cenreg.default =
@@ -40,19 +32,16 @@ function(obs, censored, groups, dist, conf.int=0.95, ...)
 {
     dist = ifelse(missing(dist), "lognormal", dist)
     ret = switch(dist,
-                 gaussian  = new_cenreg_gaussian(obs, dist, ...),
-                 lognormal = new_cenreg_lognormal(obs, dist, ...),
+                 gaussian  = new_cenreg_gaussian(obs, ...),
+                 lognormal = new_cenreg_lognormal(obs, ...),
                  survreg(asSurv(obs), dist=dist, ...)
     )
 
-    #y    = eval.parent(obs[[2]][[2]])
-    #ycen = eval.parent(obs[[2]][[3]])
+    y    = eval(obs[[2]][[2]], environment(obs))
+    ycen = eval(obs[[2]][[3]], environment(obs))
 
-    #ret@n = length(y)
-    #ret@n.cen = length(y[ycen])
-
-    ret@n = 0
-    ret@n.cen = 0
+    ret@n = length(y)
+    ret@n.cen = length(y[ycen])
 
     ret@conf.int = conf.int
 
@@ -159,7 +148,7 @@ setMethod("print", signature(x="summary.cenreg"), function(x, ...)
       {
 	    cat("\nScale:\n")
 	    print(x$scale, digits=digits, ...)
-	  }
+      }
 
     cat("\n", x$parms, "\n", sep='')
     df  <- sum(x$df) - x$idf   # The sum is for penalized models
@@ -208,7 +197,6 @@ function(x)
 {
     n = x$n
     G = -2 * diff(x$loglik)
-
     sqrt(1 - exp(G/n))
 }
 
@@ -217,7 +205,8 @@ function(x)
 new_cenreg_lognormal =
 function(formula, dist, ...)
 {
-    new("cenreg-lognormal", survreg=survreg(asSurv(formula), dist=dist, ...))
+    s = survreg=survreg(asSurv(formula), dist="lognormal", ...)
+    new("cenreg-lognormal", survreg=s)
 }
 
 # cenreg for gaussian, or normal, distributions
@@ -233,18 +222,22 @@ function(formula, dist, ...)
 # nondetects (a simple trick is: start = obs - obs * censored).
 
 new_cenreg_gaussian =
-function(formula, dist, ...)
+function(formula, ...)
 {
-    obs      = formula[[2]][[2]]
-    censored = formula[[2]][[3]]
+    end      = eval(formula[[2]][[2]], environment(formula))
+    censored = eval(formula[[2]][[3]], environment(formula))
 
-    ## This assumes a single-level grouping -- fix it!
-    groups   = formula[[3]]
+    start = end - (end * censored)
+    groups = formula[[3]]
+    environment(groups) = environment(formula)
 
-    f = as.formula(substitute(Surv(o - o * c, o, type="interval2")~g, 
-                                   list(o=obs, c=censored, g=groups)))
-    environment(f) = parent.frame()
-    new("cenreg-gaussian", survreg=survreg(f, dist=dist, ...))
+    f = substitute(Surv(start, end, type="interval2")~g, list(g=groups))
+    f = as.formula(f)
+
+    cl = call("survreg", f, dist="gaussian")
+    s = eval(substitute(cl), list(start=start, end=end), environment(formula))
+      
+    new("cenreg-gaussian", survreg=s)
 }
 
 #-->> END Maximum Likelihood Estimation REGRESSION section
