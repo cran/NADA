@@ -6,6 +6,11 @@
 \alias{plot,ros,missing-method}
 \alias{plot,ros-method}
 \alias{plot,cenfit-method}
+\alias{plot,cenmle-method}
+\alias{plot,cenmle-lognormal,ANY-method}
+\alias{plot,cenmle-gaussian,ANY-method}
+\alias{plot,cenreg-method}
+\alias{plot,cenreg,ANY-method}
 \title{Methods for function plot in Package NADA}
 \description{
   Methods for plotting objects in package \pkg{NADA} 
@@ -14,6 +19,10 @@
 \S4method{plot}{ros}(x, plot.censored=FALSE, lm.line=TRUE, grid=TRUE, ...)
 
 \S4method{plot}{cenfit}(x, conf.int=FALSE, ...)
+
+\S4method{plot}{cenmle}(x, ...)
+
+\S4method{plot}{cenreg}(x, ...)
 
 } % End usage
 

@@ -50,12 +50,12 @@ function (obs, censored, groups)
     censummary(obs, censored, as.factor(groups))
 })
 
-setMethod("print", signature("censummary"), function(x, ...)
+setMethod("show", signature("censummary"), function(object)
 {
-    for (i in names(x))
+    for (i in names(object))
       {
         cat(i, ":\n", sep="")
-        print(x[[i]])
+        print(object[[i]])
         cat("\n")
       }
 })
@@ -83,23 +83,39 @@ function(obs, censored)
 
 # Dennis' censored boxplots 
 cenboxplot =
-function(obs, censored, group, log=TRUE, range=0, ...) 
+function(obs, cen, group, log=TRUE, range=0, ...) 
 {
   if (log) log="y"
   else     log=""
 
-  if (missing(group)) ret = boxplot(obs, log=log, range=range, ...)
-  else                 ret = boxplot(obs~group, log=log, range=range, ...)
+  if (missing(group)) 
+      ret = boxplot(cenros(obs, cen), log=log, range=range, ...)
+  else
+    {
+      modeled = numeric()
+      groups  = character()
+      for (i in levels(as.factor(group)))
+        {
+            mod = suppressWarnings(
+                    cenros(obs[group == i], cen[group == i])$modeled)
+            grp = rep(i, length(mod))
+
+            modeled = c(modeled, mod)
+            groups = c(groups, grp)
+        }
+      boxplot(modeled~as.factor(groups), log=log, range=range, ...)
+      ret = data.frame(ros.model=modeled, group=groups)
+    }
 
   # Draw horiz line at max censored value
-  abline(h=max(obs[censored])) 
+  abline(h=max(obs[cen])) 
 
   invisible(ret)
 }
 
 # Dennis' censored xy plots -- need to fix this
 cenxyplot =
-function (x, xcen, y, ycen, log="xy", lty="dashed", ...) 
+function (x, xcen, y, ycen, log="", lty="dashed", ...) 
 {
     plot(x, y, log = log, type = "n", ...)
 

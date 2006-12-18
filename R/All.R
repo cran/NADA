@@ -68,7 +68,7 @@ setGeneric("cor", function(x, y = NULL, use = "all.obs",
 setGeneric("LCL", function(x) standardGeneric("LCL"))
 setGeneric("UCL", function(x) standardGeneric("UCL"))
 
-## Broken for the time being
+## Broken for the time being -- use lines
 #setGeneric("abline", 
 #           function(a, b, h, v, reg, coef, untf, col, lty, lwd, ...) 
 #           standardGeneric("abline"))
@@ -97,13 +97,15 @@ setClass("NADAList", "list")
 
 #setMethod("summary", signature(), function(x, ...))
 
-setMethod("print", signature("NADAList"), function(x, ...)
+setMethod("print", signature("NADAList"), function(x, ...) show(x))
+
+setMethod("show", signature("NADAList"), function(object)
 {
-    tag = names(x)
-    for (i in 1:length(x))
+    tag = names(object)
+    for (i in 1:length(object))
       {
         cat(tag[i], "\n")
-        print(x[[i]])
+        print(object[[i]])
         cat("\n")
       }
 })

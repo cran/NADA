@@ -9,16 +9,16 @@
     are invalid are must be estimated using methods for censored data.
 }
 \synopsis{
-    cenboxplot(obs, censored, group, log=TRUE, range=0, ...)
+    cenboxplot(obs, cen, group, log=TRUE, range=0, ...)
 }
 \usage{
-    cenboxplot(obs, censored, group, log=TRUE, range=0, ...)
+    cenboxplot(obs, cen, group, log=TRUE, range=0, ...)
 }
 \arguments{
 \item{obs}{
     A numeric vector of observations.
 } 
-\item{censored}{
+\item{cen}{
     A  logical vector indicating TRUE where an observation in x is
     censored (a less-than value) and FALSE otherwise.  
 }

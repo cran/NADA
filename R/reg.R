@@ -11,6 +11,7 @@ setOldClass("survreg")
 
 setClass("cenreg", 
          representation(
+          y="numeric", ycen="logical", 
           n="numeric", n.cen="numeric", conf.int="numeric", survreg="survreg"))
 
 setClass("cenreg-gaussian", representation("cenreg"))
@@ -37,13 +38,16 @@ function(obs, censored, groups, dist, conf.int=0.95, ...)
                  survreg(asSurv(obs), dist=dist, ...)
     )
 
-    y    = eval(obs[[2]][[2]], environment(obs))
-    ycen = eval(obs[[2]][[3]], environment(obs))
+    ret@y    = eval(obs[[2]][[2]], environment(obs))
+    ret@ycen = eval(obs[[2]][[3]], environment(obs))
 
-    ret@n = length(y)
-    ret@n.cen = length(y[ycen])
+    ret@n = length(ret@y)
+    ret@n.cen = length(ret@y[ret@ycen])
 
     ret@conf.int = conf.int
+
+    #browser()
+    ret@survreg$call = sys.call(sys.parent())
 
     return(ret)
 }
@@ -67,11 +71,54 @@ setMethod("summary", signature(object="cenreg"), function(object, ...)
     return (new("summary.cenreg", s))
 })
 
-setMethod("print", signature(x="cenreg"), function(x, ...)
+setMethod("show", signature(object="cenreg"), function(object)
 {
-    ret = summary(x, ...)
+    ret = summary(object)
     print(ret)
     invisible(ret)
+})
+
+setMethod("plot", signature(x="cenreg"), 
+           function(x, y, ylab="Y", xlab="X", method=1, ...) 
+{
+    # Plots the percentiles of residuals vs their values
+    method1 = function(x, y, ylab, xlab, ...)
+      {
+        res = as.vector(residuals(x, type="deviance"))
+        res.km = cenfit(res, x@ycen)
+
+        surv = res.km@survfit$surv
+        time = res.km@survfit$time
+
+        plot(time, surv, ylab=ylab, xlab=xlab, ...)
+      }
+
+    # Plots the qnorm(percentiles) of residuals vs their values
+    method2 = function(x, y, ylab, xlab, ...)
+      {
+        res = as.vector(residuals(x, type="deviance"))
+        res.km = cenfit(res[!x@ycen], x@ycen[!x@ycen])
+        plot(qnorm(res.km@survfit$surv), res.km@survfit$time, 
+             ylab=ylab, xlab=xlab, ...)
+      }
+
+    # Same as method2 but only plots residuals > 0
+    method3 = function(x, y, ylab, xlab, ...)
+      {
+        res = as.vector(residuals(x, type="deviance"))
+        res.km = cenfit(res, x@ycen)
+
+        surv = res.km@survfit$surv
+        time = res.km@survfit$time
+
+        plot(qnorm(surv[time > 0]), time[time > 0], ylab=ylab, xlab=xlab, ...)
+      }
+
+    switch (method,
+        method1(x, y, ylab, xlab, ...),
+        method2(x, y, ylab, xlab, ...),
+        method3(x, y, ylab, xlab, ...),
+    )
 })
 
 setMethod("predict", signature(object="cenreg-lognormal"), 
@@ -130,8 +177,9 @@ setMethod("cor", signature(x="cenreg"), function(x, y, use, method)
 
 # This is summary.survreg from the survival package --
 # for now we hack it to do what we want. 
-setMethod("print", signature(x="summary.cenreg"), function(x, ...)
+setMethod("show", signature(object="summary.cenreg"), function(object)
 {
+    x = object
     digits = max(options()$digits - 4, 3)
     n <- x$n
 

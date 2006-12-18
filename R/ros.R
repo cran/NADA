@@ -81,6 +81,11 @@ function(x)
     return(x)
 }
 
+setMethod("show", signature(object="ros"), function(object)
+{
+    print(object)
+})
+
 setMethod("print", signature(x="ros"), function(x, ...)
 {
     n       = length(x$modeled)
@@ -92,7 +97,7 @@ setMethod("print", signature(x="ros"), function(x, ...)
     ret = c(n, n.cen, median, mean, sd)
     names(ret) = c("n", "n.cen", "median", "mean", "sd")
 
-    print(ret)
+    print(ret, ...)
     invisible(ret)
 })
 
@@ -109,7 +114,7 @@ setMethod("summary", "ros", function(object, plot=FALSE, ...)
 
 # S3 Method -- ros conversion to data.frame discards all linear model info
 as.data.frame.ros = 
-function (x, row.names = NULL, optional = FALSE)
+function (x, row.names = NULL, optional = FALSE, ...)
 {
     x = list(obs=x$obs, censored=x$censored, pp=x$pp, modeled=x$modeled)
     as.data.frame(x, row.names, optional)

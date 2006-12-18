@@ -66,8 +66,9 @@ setMethod("cenmle",
     eval.parent(cenreg(f, ...))
 })
 
-setMethod("print", signature(x="cenmle"), function(x, ...)
+setMethod("show", signature(object="cenmle"), function(object)
 {
+    x = object
     ret = c(x@n, x@n.cen, median(x), mean(x)[1], sd(x)) 
     names(ret) = c("n", "n.cen", "median", "mean", "sd")
     print(ret)
@@ -86,6 +87,27 @@ setMethod("sd", signature(x="cenmle-lognormal"), function(x, na.rm=FALSE)
 
     sqrt(exp(2*coef + scale^2)*(exp(scale^2)-1))
 })
+
+setMethod("plot", signature(x="cenmle-lognormal"), 
+           function(x, y, xlim=c(-3, 3), ...) 
+{
+    s = cenfit(x@y, x@ycen)
+    plot(x=qnorm(s@survfit$surv), y=log(s@survfit$time), 
+         xlab="Normal Quantiles", ylab="log(Value)", xlim=xlim, ...)
+    #title(main="Censored Probability Plot")
+    abline(x@survreg$coefficients[1], x@survreg$scale)
+})
+
+setMethod("plot", signature(x="cenmle-gaussian"), 
+           function(x, y, xlim=c(-3, 3), ...) 
+{
+    s = cenfit(x@y, x@ycen)
+    plot(x=qnorm(s@survfit$surv), y=s@survfit$time,
+         xlab="Normal Quantiles", ylab="Value", xlim=xlim, ...)
+    #title(main="Censored Probability Plot")
+    abline(x@survreg$coefficients[1], x@survreg$scale)
+})
+
 
 setMethod("quantile", signature(x="cenmle-lognormal"),
           function(x, probs = NADAprobs, conf.int = FALSE, ...)

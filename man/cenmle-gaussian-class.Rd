@@ -15,6 +15,8 @@
   \describe{
     \item{\code{n}:}{Total number of observations associated with the model}
     \item{\code{n.cen}:}{Number of censored observations}
+    \item{\code{y}:}{Vector of observations}
+    \item{\code{ycen}:}{Censoring indicator}
     \item{\code{conf.int}:}{Confidence interval associated with the model}
     \item{\code{survreg}:}{Object of class \code{"survreg"}  }
   }

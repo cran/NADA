@@ -4,6 +4,15 @@
 
 setGeneric("cenken", function(y, ycen, x, xcen) standardGeneric("cenken"))
 
+## Classes 
+
+setClass("cenken", "NADAList")
+
+#setClass("cenken", 
+#         representation(slope="numeric", intercept="numeric",
+#                        tau="numeric", p="numeric"))
+
+
 ## Methods
 
 setMethod("cenken",
@@ -35,6 +44,28 @@ setMethod("cenken",
 
     kendallATS(y, ycen, x, xcen)
 })
+
+setMethod("show", signature(object="cenken"), function(object)
+{
+    show(as(object, "NADAList"))
+})
+
+setMethod("lines", signature(x="cenken"), function (x, ...)
+{
+     abline(a=x$intercept, b=x$slope, ...)
+})
+
+## Broken for the time being -- use lines
+#setMethod("abline", signature(a="cenken"),
+##function(a, b, h, v, reg, coef, untf, col, par, lty, ...)
+#function (a = NULL, b = NULL, h = NULL, v = NULL, reg = NULL,
+#          coef = NULL, untf = FALSE, col = par("col"), lty = par("lty"),
+#          lwd = NULL, ...)
+#{
+#    #abline(a=a$intercept, b=a$slope, ...)
+#    abline(a=a$intercept, b=a$slope, h=h, v=v, reg=reg, coef=coef, 
+#           untf=untf, col=col, lty=lty, lwd=lwd, ...)
+#})
 
 ## kendallATS function -- the heart of the cenken routines
 #  Original S code written by D. Lorenz for S-Plus.
@@ -88,11 +119,29 @@ function(y, ycen, x, xcen, tol=1e-7, iter=1e+3)
 
     slope = 0.5 * (ubs$b[2] + lbs$b[2])
     
-    ## To do: Calculate the intercept
+    int = turnbull(y, ycen, x, xcen, slope)
 
     p_tau = ktau_p(x, xcen, y, ycen)
 
-    new("NADAList", list(tau=p_tau$tau, slope=slope, p=p_tau$p))
+    ret = list(slope=slope, intercept=int, tau=p_tau$tau, p=p_tau$p)
+    class(ret) = "cenken"
+
+    return(ret)
+}
+
+turnbull =
+function(y, ycen, x, xcen, slope, tol=.Machine$double.eps)
+{
+    # TODO: make sure no negative residuals by bumping up resids
+    resid = y[!xcen] - slope * x[!xcen]
+
+    A=cbind(L = resid - (y[!xcen] * ycen[!xcen]), R = resid)
+
+    em = EM(A, tol=tol)
+    surv = rev(cumsum(rev(em$pf)))[-1]
+    int = em$intmap[2,][min(which(surv <= 0.5))]
+
+    return(int)
 }
 
 ktau_b =

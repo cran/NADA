@@ -8,10 +8,10 @@
     dashed lines spanning the from the censored threshold to zero.
 }
 \synopsis{
-    cenxyplot(x, xcen, y, ycen, log="xy", lty="dashed", ...)
+    cenxyplot(x, xcen, y, ycen, log="", lty="dashed", ...)
 }
 \usage{
-    cenxyplot(x, xcen, y, ycen, log="xy", lty="dashed", ...)
+    cenxyplot(x, xcen, y, ycen, log="", lty="dashed", ...)
 }
 \arguments{
 \item{x}{
@@ -33,7 +33,7 @@
     A character string which contains '"x"' if the x axis is to
     be logarithmic, '"y"' if the y axis is to be logarithmic and
     '"xy"' or '"yx"' if both axes are to be logarithmic.  Default
-    is '"xy"'.
+    is '""', or both axis linear.
 }
 \item{lty}{
     The line type of the lines representing the censored-data ranges.

@@ -25,6 +25,7 @@ export(
     "hc.ppoints.uncen")
 
 exportClasses(
+    "NADAList",
     "ros",
     "cenfit",
     "cenreg",
@@ -33,9 +34,11 @@ exportClasses(
     "cenmle",
     "cenmle-lognormal",
     "cenmle-gaussian",
-    "summary.cenreg")
+    "summary.cenreg",
+    "cenken")
 
 exportMethods(
+    "show",
     "print",
     "plot",
     "boxplot",

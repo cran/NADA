@@ -4,6 +4,7 @@
 \alias{lines,ANY-method}
 \alias{lines,ros-method}
 \alias{lines,cenfit-method}
+\alias{lines,cenken-method}
 \title{Methods for function lines in Package NADA}
 \description{
     Methods for adding \code{lines} to plots in package \pkg{NADA}
@@ -12,6 +13,8 @@
 \S4method{lines}{ros}(x, ...)
 
 \S4method{lines}{cenfit}(x, ...)
+
+\S4method{lines}{cenken}(x, ...)
 
 } % End usage
 

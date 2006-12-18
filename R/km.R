@@ -234,31 +234,34 @@ setMethod("quantile", signature(x="cenfit"),
     return(ret)
 })
 
-# Private mean method for cenfit objects -- does not handle strata!
 # Given a cenfit or survfit object returns the calculated mean and se(mean)
+# Does not handle strata!
 .mean.cenfit =
 function(xx)
 {
     x = xx@survfit
 
-    stime   = x$time
-    surv    = x$surv
-    n.risk  = x$n.risk
-    n.event = x$n.event
+    detected = which(x$n.event > 0)
 
-    mean = NULL
-    varmean = NULL
+    stime   = x$time[detected]
+    surv    = x$surv[detected]
+    n.risk  = x$n.risk[detected]
+    n.event = x$n.event[detected]
 
     min.stime = min(stime)
     min.time = min(0, min.stime)
     n = length(stime)
 
+    # This hh calc is copied from survival sources.
+    # I don't completely understand what hh is.  But it does work.
     hh = c(ifelse((n.risk[-n] - n.event[-n]) == 0, 
                    0, 
                    n.event[-n]/(n.risk[-n] * (n.risk[-n] - n.event[-n]))), 0)
 
-    ndead = sum(n.event)
     dif.time = c(diff(c(min.time, stime)), 0)
+
+    mean = NULL
+    varmean = NULL 
 
     if (!is.matrix(surv)) 
       {
@@ -269,10 +272,8 @@ function(xx)
       {
         n = nrow(surv)
         mean = dif.time * rbind(1, surv)
-        if (n == 1) 
-            temp = mean[2, , drop = FALSE]
-        else temp = (apply(mean[(n + 1):2, , drop = FALSE], 2, 
-            cumsum))[n:1, , drop = FALSE]
+        if (n == 1) temp = mean[2, , drop = FALSE]
+        else temp = (apply(mean[(n + 1):2, , drop = FALSE], 2, cumsum))[n:1, , drop = FALSE]
         varmean = c(hh %*% temp^2)
       }
 
@@ -280,8 +281,10 @@ function(xx)
     p = 1-((1-x$conf.int)/2)
     z = qnorm(p)
 
+    n.detect = sum(n.event)
+
     mean = sum(mean)
-    mean.se = sqrt(varmean)
+    mean.se = sqrt(varmean * (n.detect/(n.detect - 1)))
     mean.lcl = mean - mean.se * z
     mean.ucl = mean + mean.se * z
 
@@ -337,8 +340,9 @@ setMethod("median", signature(x="cenfit"), function(x, na.rm=FALSE)
     return(ret)
 })
 
-setMethod("print", signature(x="cenfit"), function(x, ...)
+setMethod("show", signature(object="cenfit"), function(object)
 {
+    x = object 
     s = x@survfit
 
     summaryVec =
@@ -374,7 +378,7 @@ setMethod("print", signature(x="cenfit"), function(x, ...)
         rownames(ret) = names(s$strata)
       }
 
-    print(ret, ...)
+    print(ret)
     invisible(ret)
 })
 
