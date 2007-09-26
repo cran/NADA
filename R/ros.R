@@ -160,6 +160,39 @@ setMethod("predict", "ros", function(object, newdata, ...)
     return(get(object$reverseT)(predicted))
 })
 
+# pexceed method -- given new values or concentrations,
+# returns the probability of exceedance.
+setMethod("pexceed", "ros",
+function(object, newdata, conf.int=FALSE, conf.level=0.95)
+{
+    cen = object$censored
+    forwardT = get(object$forwardT)
+
+    pp.nq = qnorm(object$pp[!cen])
+    obs.transformed = forwardT(object$obs[!cen])
+
+    n.lm = lm(pp.nq~obs.transformed)
+
+    nd = data.frame(obs.transformed=forwardT(newdata))
+    
+    ret = NULL
+    if (!conf.int) ret = 1 - pnorm(as.vector(predict.lm(n.lm, nd)))
+    else
+      {    
+        ret = 1 - pnorm(predict.lm(n.lm, nd,
+                        interval="confidence", level=conf.level))
+
+        lcl = paste(as.character(conf.level), "LCL", sep='')
+        ucl = paste(as.character(conf.level), "UCL", sep='')
+
+        ret[,c(2,3)] = ret[,c(3,2)]
+        colnames(ret) = c("prob", lcl, ucl)
+        rownames(ret) = as.character(newdata)
+      }
+
+    return(ret)
+})
+
 ## Generic plotting functions
 
 setMethod("lines", signature(x="ros"), function (x, ...)

@@ -13,7 +13,7 @@
      are left blank.  It will compute ML tests similar in function and
      assumptions to two-sample t-tests and analysis of variance when
      groups are specified following the ~.  It will compute regression
-     equations, including multiple regression, when continuos explanatory
+     equations, including multiple regression, when continuous explanatory
      variables are included following the ~.  It will compute the ML
      equivalent of analysis of covariance when both group and continuous
      explanatory variables are specified following the ~.  To avoid
@@ -119,7 +119,10 @@ censored environmental data.  John Wiley and Sons, USA, NJ.
     sd(tcemle)
     quantile(tcemle)
 
-    # Use the model's confidence interval
+    # This time specifiy a different confidence interval
+    tcemle = with(TCEReg, cenmle(TCEConc, TCECen, conf.int=0.80)) 
+
+    # Use the model's confidence interval with the quantile function
     quantile(tcemle, conf.int=TRUE)
 
     # With groupings

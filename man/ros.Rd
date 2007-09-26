@@ -73,7 +73,7 @@
     aquifers of the United States. Applied Geochemistry vol. 20,
     pp. 1560-1570.
 
-    Dennis R. Helsel (2005), Nondetects And Data Analasis:
+    Dennis R. Helsel (2005), Nondetects And Data Analysis:
     John Wiley and Sons, New York.
 
     Dennis R. Helsel (1990), Less Than Obvious: Statistical Methods for,

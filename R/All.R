@@ -47,9 +47,6 @@ setGeneric("sd", function(x, na.rm=FALSE) standardGeneric("sd"))
 
 setGeneric("median", function(x, na.rm=FALSE) standardGeneric("median"))
 
-setGeneric("min", function(..., na.rm=FALSE) standardGeneric("min"))
-setGeneric("max", function(..., na.rm=FALSE) standardGeneric("max"))
-
 setGeneric("quantile", function(x, ...) standardGeneric("quantile"))
 
 setGeneric("predict", function(object, ...) standardGeneric("predict"))

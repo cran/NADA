@@ -8,6 +8,7 @@
 \alias{predict,cenreg-lognormal-method}
 \alias{pexceed}
 \alias{pexceed,cenfit-method}
+\alias{pexceed,ros-method}
 \title{Methods for function predict in package NADA}
 \description{
   Functions that perform predictions using NADA model objects.
@@ -24,6 +25,8 @@
 \S4method{predict}{cenreg}(object, newdata, conf.int=FALSE, ...)
 
 \S4method{pexceed}{cenfit}(object, newdata, conf.int=FALSE, ...)
+
+\S4method{pexceed}{ros}(object, newdata, conf.int=FALSE, ...)
 
 
 } % End usage
