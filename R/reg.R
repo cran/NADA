@@ -161,14 +161,9 @@ setMethod("show", signature(object="summary.cenreg"), function(object)
       {
 	    cat("\nScale fixed at", format(x$scale, digits=digits),"\n") 
       }
-    else if (length(x$scale)==1) 
-      {
-	    cat ("\nScale=", format(x$scale, digits=digits), "\n")
-      }
     else 
       {
-	    cat("\nScale:\n")
-	    print(x$scale, digits=digits, ...)
+	    cat ("\nScale =", format(x$scale, digits=digits), "\n")
       }
 
     cat("\n", x$parms, "\n", sep='')

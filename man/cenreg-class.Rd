@@ -29,7 +29,7 @@ Class \code{"vector"}, by class \code{"list"}.
   }
 }
 \author{
-    Lopaka(Rob) Lee <rclee@usgs.gov>
+    Lopaka Lee <rclee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 
@@ -42,5 +42,5 @@ Class \code{"vector"}, by class \code{"list"}.
 %    xcen     = c(TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE)
 %
 %    class(cenreg(x, xcen))
-}
+%}
 \keyword{classes}

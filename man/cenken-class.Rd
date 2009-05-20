@@ -25,7 +25,7 @@ Class \code{"list"}, from data part.
   }
 }
 \author{
-    Lopaka(Rob) Lee <rclee@usgs.gov>
+    Lopaka Lee <rclee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 
@@ -38,5 +38,5 @@ Class \code{"list"}, from data part.
 %    xcen     = c(TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE)
 %
 %    class(cenken(x, xcen))
-}
+%}
 \keyword{classes}

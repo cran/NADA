@@ -33,7 +33,7 @@ Class \code{"vector"}, by class \code{"list"}.
   }
 }
 \author{
-    Lopaka(Rob) Lee <rclee@usgs.gov>
+    Lopaka Lee <rclee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 

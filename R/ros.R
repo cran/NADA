@@ -317,9 +317,11 @@ function(obs, censored)
     if (!any(censored)) pp = ppoints(obs)
     else
       {
-        cn = cohn(obs, censored)
-        pp[!censored] = hc.ppoints.uncen(cn=cn)
-        pp[censored]  = hc.ppoints.cen(cn=cn)
+        #cn = cohn(obs, censored)
+        #pp[!censored] = hc.ppoints.uncen(cn=cn)
+        #pp[censored]  = hc.ppoints.cen(cn=cn)
+        pp[!censored] = hc.ppoints.uncen(obs, censored)
+        pp[censored]  = hc.ppoints.cen(obs, censored)
       }
 
     return(pp)
@@ -371,7 +373,8 @@ function(obs, censored)
 hc.ppoints.uncen =
 function(obs, censored, cn)
 {
-    if (missing(cn)) { cn = cohn(obs, censored) }
+    #if (missing(cn)) { cn = cohn(obs, censored) }
+    cn = cohn(obs, censored)
 
     nonzero = (cn$A != 0)
     A     = cn$A[nonzero]

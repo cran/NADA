@@ -24,7 +24,7 @@ Class \code{"list"}, from data part.
   }
 }
 \author{
-    Lopaka(Rob) Lee <rclee@usgs.gov>
+    Lopaka Lee <rclee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 

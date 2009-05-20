@@ -84,7 +84,7 @@ Cox's proportional hazards model with covariates.  \emph{Biometrics}
 40, 601-610.
 }
 \author{
-    Lopaka(Rob) Lee <rclee@usgs.gov>
+    Lopaka Lee <rclee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 

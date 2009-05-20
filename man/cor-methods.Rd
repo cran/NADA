@@ -1,5 +1,6 @@
 \name{cor-methods}
 \docType{methods}
+\alias{cor}
 \alias{cor-methods}
 \alias{cor,ANY-method}
 \alias{cor,cenreg-method}

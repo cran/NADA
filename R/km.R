@@ -85,13 +85,7 @@ setMethod("[", signature(x="cenfit", i="numeric", j="missing"),
 
     if (is.null(s$strata)) stop("can't index; object contains only one ECDF")
 
-    s$n = s$strata.all[i]
-
     s = s[i]
-
-    s$strata        = NULL
-    s$strata.all    = NULL
-    s$ntimes.strata = NULL
 
     new("cenfit", survfit=s)
 })
