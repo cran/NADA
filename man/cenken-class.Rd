@@ -13,6 +13,7 @@
 }
 \section{Slots}{
   \describe{
+    %No slots, it just extends a list.
     \item{\code{.Data}:}{Object of class \code{"list"}  }
   }
 }
@@ -25,7 +26,7 @@ Class \code{"list"}, from data part.
   }
 }
 \author{
-    Lopaka Lee <rclee@usgs.gov>
+    Lopaka Lee <llee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 

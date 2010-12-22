@@ -32,7 +32,7 @@ Class \code{"cenreg"}
   }
 }
 \author{
-    Lopaka Lee <rclee@usgs.gov>
+    Lopaka Lee <llee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 

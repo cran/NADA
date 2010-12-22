@@ -85,7 +85,7 @@
     Research vol. 24, no. 12, pp.1997-2004 
 } 
 \author{
-    Lopaka Lee <rclee@usgs.gov>
+    Lopaka Lee <llee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 

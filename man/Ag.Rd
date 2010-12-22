@@ -1,5 +1,5 @@
-\name{Silver}
-\alias{Ag}
+\name{Ag}
+\alias{Silver}
 \docType{data}
 \title{Dissolved silver concentrations from water analyses} 
 \description{

@@ -128,7 +128,7 @@ function(x, newdata, conf.int=FALSE)
 
 # Public predict method for cenfit objects
 setMethod("predict", signature(object="cenfit"),
-          function(object, newdata, conf.int=FALSE) 
+          function(object, newdata, conf.int=FALSE, ...) 
 {
     ret  = NULL
     s = object@survfit
@@ -149,7 +149,7 @@ setMethod("predict", signature(object="cenfit"),
 
 # Public pexceed method for cenfit objects
 setMethod("pexceed", signature(object="cenfit"),
-          function(object, newdata, conf.int=FALSE) 
+          function(object, newdata, conf.int=FALSE, ...) 
 {
     ret = NULL
 
@@ -377,7 +377,8 @@ setMethod("show", signature(object="cenfit"), function(object)
 })
 
 setMethod("summary", signature(object="cenfit"),
-          function(object, times, censored=FALSE, scale=1, ...)
+          function(object, ...)
+          #function(object, times, censored=FALSE, scale=1, ...)
 {
     strataSummary =
     function(x)

@@ -163,7 +163,7 @@ setMethod("predict", "ros", function(object, newdata, ...)
 # pexceed method -- given new values or concentrations,
 # returns the probability of exceedance.
 setMethod("pexceed", "ros",
-function(object, newdata, conf.int=FALSE, conf.level=0.95)
+function(object, newdata, conf.int=FALSE, conf.level=0.95, ...)
 {
     cen = object$censored
     forwardT = get(object$forwardT)
@@ -284,17 +284,18 @@ setMethod("plot", signature(x="ros", y="missing"),
       }
 })
 
-setMethod("boxplot", signature(x="ros"), function(x, log="y", range=0,...)
+#setMethod("boxplot", signature(x="ros"), function(x, log="y", range=0,...)
+setMethod("boxplot", signature(x="ros"), function(x, ...)
 {
     # use boxplot.default instead
-    bx = boxplot(x$modeled, plot=FALSE, range=range, ...)
+    bx = boxplot(x$modeled, plot=FALSE, ...)
 
     # The vector stats is the famous five -- with outlier limts.
     # We relpace the quantiles with the ros-modeled ones
     bx$stats[2:4] = as.vector(quantile(x, c(0.25, 0.5, 0.75)))
     bx$stats = as.matrix(bx$stats)
 
-    bxp(bx, log=log, ...)
+    bxp(bx, ...)
     invisible(bx)
 })
 

@@ -12,11 +12,11 @@
   Methods for computing the median using model objects in package \pkg{NADA}
 }
 \usage{
-\S4method{median}{ros}(x, na.rm=FALSE, ...)
+\S4method{median}{ros}(x, na.rm=FALSE)
 
-\S4method{median}{cenfit}(x, na.rm=FALSE, ...)
+\S4method{median}{cenfit}(x, na.rm=FALSE)
 
-\S4method{median}{cenmle}(x, na.rm=FALSE, ...)
+\S4method{median}{cenmle}(x, na.rm=FALSE)
 
 %\S4method{median}{cenmle-lognormal}(x, na.rm=FALSE, ...)
 

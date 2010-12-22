@@ -70,7 +70,7 @@
     vol. 23, no. 4, pp. 715-727.
 } 
 \author{
-    Lopaka Lee <rclee@usgs.gov>
+    Lopaka Lee <llee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 

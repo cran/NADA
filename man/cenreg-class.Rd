@@ -14,7 +14,12 @@ Objects can be created by calls of the form \code{cenreg(obs, censored, groups)}
 }
 \section{Slots}{
   \describe{
+    \item{\code{conf.int}:}{Numeric value of confidence level (0.95)}
+    \item{\code{n}:}{Total number of samples}
+    \item{\code{n.cen}:}{Total censored samples}
     \item{\code{survreg}:}{Object of class \code{"survreg"}  }
+    \item{\code{y}:}{Total y samples}
+    \item{\code{ycen}:}{Total censored y samples}
   }
 }
 \section{Extends}{
@@ -29,7 +34,7 @@ Class \code{"vector"}, by class \code{"list"}.
   }
 }
 \author{
-    Lopaka Lee <rclee@usgs.gov>
+    Lopaka Lee <llee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 

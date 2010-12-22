@@ -16,16 +16,16 @@
 }
 \usage{
 
-\S4method{quantile}{ros}(object, probs=NADAprobs, ...)
+\S4method{quantile}{ros}(x, probs=NADAprobs, ...)
 
-\S4method{quantile}{cenfit}(object, probs=NADAprobs, conf.int=FALSE, ...)
+\S4method{quantile}{cenfit}(x, probs=NADAprobs, conf.int=FALSE, ...)
 
-\S4method{quantile}{cenmle}(object, probs=NADAprobs, conf.int=FALSE, ...)
+\S4method{quantile}{cenmle}(x, probs=NADAprobs, conf.int=FALSE, ...)
 
 } % usage
 \arguments{
 
-\item{object}{
+\item{x}{
     An output object from a NADA fuction such as \code{\link{ros}}.
 }
 \item{probs}{

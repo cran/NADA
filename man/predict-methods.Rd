@@ -26,7 +26,7 @@
 
 \S4method{pexceed}{cenfit}(object, newdata, conf.int=FALSE, ...)
 
-\S4method{pexceed}{ros}(object, newdata, conf.int=FALSE, ...)
+\S4method{pexceed}{ros}(object, newdata, conf.int=FALSE, conf.level=0.95, ...)
 
 
 } % End usage
@@ -46,6 +46,9 @@
         \code{cenfit} objects, the confidence interval is set during the call
         to \code{\link{cenfit}}.  Currently not supported for \code{ros} 
         objects.
+}
+\item{conf.level}{
+        The actual confidence level to which to bracket the prediction. Default         is 0.95
 }
 \item{...}{
         Additional arguments passed to the generic method.

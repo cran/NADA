@@ -13,8 +13,9 @@
 }
 \section{Slots}{
   \describe{
-    No slots, it just extends a list.
+    %No slots, it just extends a list.
     %\item{\code{survreg}:}{Object of class \code{"survreg"}  }
+    \item{\code{.Data}:}{Object of class \code{"list"}  }
   }
 }
 \section{Extends}{
@@ -23,11 +24,11 @@
 }
 \section{Methods}{
   \describe{
-    %\item{summary}{\code{signature(object = "cenreg")}: ... }
+    \item{summary}{\code{signature(object = "cenreg")}: ... }
   }
 }
 \author{
-    Lopaka Lee <rclee@usgs.gov>
+    Lopaka Lee <llee@usgs.gov>
 
     Dennis Helsel <dhelsel@usgs.gov>
 } 
