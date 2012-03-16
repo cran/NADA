@@ -188,7 +188,7 @@ setMethod("mean", signature(x="cenmle-lognormal"), function(x, na.rm=FALSE)
     scale = x@survreg$scale
 
     xbar = as.vector(exp(int + 0.5*(scale)^2))
-    se   = sqrt(x@survreg$var[1,1])
+    se   = sqrt(exp(2*int +scale^2)*(exp(scale^2)-1)/n)
 
     # Two-sided conf int
     p = 1-((1-x@conf.int)/2)

@@ -328,46 +328,48 @@ function(obs, censored)
     return(pp)
 }
 
-# cohn Calculates "Cohn" Numbers -- quantities described by 
+# cohn Calculates "Cohn" Numbers -- quantities described by
 # Helsel and Cohn's (1988) reformulation of a prob-plotting formula
 # described by Hirsch and Stedinger (1987).
+#
 # The Cohn Numbers are:
 # A_j   = the number of uncensored obs above the jth threshold.
-# B_j   = the number of observations (cen & uncen) below the lowest threshold.
-# C_j   = the number of censored observations between j and j-1
+# B_j   = the number of observations (cen & uncen) below the jth threshold.
+# C_j   = the number of censored observations at the jth threshold
 # P_j   = the probability of exceeding the jth threshold
+
 cohn =
 function(obs, censored)
 {
-    uncen = obs[!censored]
-    cen   = obs[censored]
+     uncen = obs[!censored]
+     cen   = obs[censored]
 
-    A = B = C = P = numeric()
+     A = B = C = P = numeric()
 
-    limit = sort(unique(cen))
+     limit = sort(unique(cen))
 
-    a = length(uncen[uncen < limit[1]])
-    if (a > 0) { limit = c(0, limit) }
+     a = length(uncen[uncen < limit[1]])
+     if (a > 0) { limit = c(0, limit) }
 
-    i = length(limit)
+     i = length(limit)
 
-    A[i] = length(uncen[ uncen >= limit[i] ])
-    B[i] = length(obs[obs <= limit[i]])
-    C[i] = length(cen[ cen == limit[i] ])
-    P[i] = A[i]/(A[i] + B[i])
+     A[i] = length(uncen[ uncen >= limit[i] ])
+     B[i] = length(obs[obs <= limit[i]])-length(uncen[uncen==limit[i]])
+     C[i] = length(cen[ cen == limit[i] ])
+     P[i] = A[i]/(A[i] + B[i])
 
-    i = i - 1
-    while (i > 0)
-      {
-        A[i] = length(uncen[ uncen >= limit[i] & uncen < limit[i + 1] ])
-        B[i] = length(obs[obs <= limit[i]])
-        C[i] = length(cen[cen == limit[i]])
-        P[i] = P[i + 1] + ((A[i]/(A[i] + B[i])) * (1 - P[i + 1]))
+     i = i - 1
+     while (i > 0)
+       {
+         A[i] = length(uncen[ uncen >= limit[i] & uncen < limit[i + 1] ])
+         B[i] = length(obs[obs <= limit[i]])-length(uncen[uncen==limit[i]])
+         C[i] = length(cen[cen == limit[i]])
+         P[i] = P[i + 1] + ((A[i]/(A[i] + B[i])) * (1 - P[i + 1]))
 
-        i = i - 1
-      }
+         i = i - 1
+       }
 
-    return(list(A=A, B=B, C=C, P=P, limit=limit))
+     return(list(A=A, B=B, C=C, P=P, limit=limit))
 }
 
 # hc.ppoints.uncen calculates plotting postions for uncensored data.

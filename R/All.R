@@ -25,10 +25,10 @@
 
 ## Globals
 
-.onLoad = function(lib, pkg) 
-{
-    require(methods)
-}
+#.onLoad = function(lib, pkg) 
+#{
+#    require(methods)
+#}
 
 # These probabilities are the used as defaults in methods like quantile.
 NADAprobs = c(0.05,0.10,0.25,0.50,0.75,0.90,0.95)

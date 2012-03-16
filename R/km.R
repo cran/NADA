@@ -192,7 +192,7 @@ function(x, newdata, conf.int=FALSE)
       {
         ret = quan
         names(ret) = 
-          paste(formatC(100 * newdata, format = "fg", wid = 1), "%", sep='')
+          paste(formatC(100 * newdata, format = "fg", width = 1), "%", sep='')
       }
     else
       {
