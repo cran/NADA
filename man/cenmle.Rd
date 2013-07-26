@@ -21,9 +21,6 @@
      tests, a probability plot of residuals should be checked to ensure
      that residuals from the regression model are approximately gaussian.
 }
-\synopsis{
-    cenmle(obs, censored, groups, ...)
-}
 \usage{
     cenmle(obs, censored, groups, ...)
 }
@@ -93,7 +90,7 @@ censored environmental data.  John Wiley and Sons, USA, NJ.
 \author{
     Lopaka Lee <llee@usgs.gov>
 
-    Dennis Helsel <dhelsel@usgs.gov>
+    Dennis Helsel <dhelsel@practicalstats.com>
 } 
 \seealso{
     \code{\link{Cen}}, 

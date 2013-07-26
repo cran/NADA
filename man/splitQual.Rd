@@ -45,7 +45,7 @@
 \author{
     Lopaka Lee <llee@usgs.gov>
 
-    Dennis Helsel <dhelsel@usgs.gov>
+    Dennis Helsel <dhelsel@practicalstats.com>
 } 
 \examples{
     v = c('<1', 1, '<1', 1, 2)

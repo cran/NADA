@@ -8,9 +8,6 @@
     shown as a horizontal line.  Any statistics below this line
     are invalid are must be estimated using methods for censored data.
 }
-\synopsis{
-    cenboxplot(obs, cen, group, log=TRUE, range=0, ...)
-}
 \usage{
     cenboxplot(obs, cen, group, log=TRUE, range=0, ...)
 }
@@ -51,7 +48,7 @@
 \author{
     Lopaka Lee <llee@usgs.gov>
 
-    Dennis Helsel <dhelsel@usgs.gov>
+    Dennis Helsel <dhelsel@practicalstats.com>
 } 
 %\seealso{
 %    \code{\link{NADA}},

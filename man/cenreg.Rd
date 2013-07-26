@@ -10,7 +10,6 @@ for censored data.
     for significance of parameters,and predicted quantiles (Median =
     points on the line) with confidence intervals can be computed.
 }
-\synopsis{cenreg(obs, censored, groups, ...)}
 \usage{
     cenreg(obs, censored, groups, ...)
 }
@@ -95,7 +94,7 @@ for censored data.
 \author{
     Lopaka Lee <llee@usgs.gov>
 
-    Dennis Helsel <dhelsel@usgs.gov>
+    Dennis Helsel <dhelsel@practicalstats.com>
 } 
 \seealso{
     \code{\link{Cen}},

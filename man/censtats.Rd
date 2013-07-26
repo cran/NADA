@@ -10,7 +10,6 @@
     Order Statistics (ROS), Maximum Likelihood Estimation (MLE), and
     Kaplan-Meier (K-M).
 }
-\synopsis{censtats(obs, censored)}
 \usage{
     censtats(obs, censored)
 }
@@ -37,7 +36,7 @@
 \author{
     Lopaka Lee <llee@usgs.gov>
 
-    Dennis Helsel <dhelsel@usgs.gov>
+    Dennis Helsel <dhelsel@practicalstats.com>
 } 
 %\seealso{
 %    \code{\link{NADA}},

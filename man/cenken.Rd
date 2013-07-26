@@ -11,10 +11,8 @@
     censored data.  Computes the Akritas-Theil-Sen nonparametric line, 
     with the Turnbull estimate of intercept.
 }
-\synopsis{cenken(y, ycen, x, xcen)}
 \usage{
     cenken(y, ycen, x, xcen)
-    cenken(y, ycen, x)
 }
 \arguments{
 \item{y}{

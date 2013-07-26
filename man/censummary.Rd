@@ -6,7 +6,6 @@
 \description{
     Produces basic, and hopefully useful, summary statistics on censored data.
 }
-\synopsis{censummary(obs, censored, groups)}
 \usage{
     censummary(obs, censored, groups)
 }
@@ -32,7 +31,7 @@
 \author{
     Lopaka Lee <llee@usgs.gov>
 
-    Dennis Helsel <dhelsel@usgs.gov>
+    Dennis Helsel <dhelsel@practicalstats.com>
 } 
 %\seealso{
 %    \code{\link{NADA}},

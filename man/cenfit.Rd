@@ -7,7 +7,6 @@
     Computes an estimate of an empirical cumulative distribution function
     (ECDF) for censored data using the Kaplan-Meier method.
 }
-\synopsis{cenfit(obs, censored, groups, ...)}
 \usage{
     cenfit(obs, censored, groups, ...)
 }
@@ -86,7 +85,7 @@ Cox's proportional hazards model with covariates.  \emph{Biometrics}
 \author{
     Lopaka Lee <llee@usgs.gov>
 
-    Dennis Helsel <dhelsel@usgs.gov>
+    Dennis Helsel <dhelsel@practicalstats.com>
 } 
 \seealso{
 %    \code{\link{cenfit-methods}},
