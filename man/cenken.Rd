@@ -73,11 +73,11 @@
     data(Golden)
     with(Golden, cenken(Blood, BloodCen, Kidney, KidneyCen))
 
+    \dontrun{
     # x is not censored
     # (example on pg 213 of the NADA book)
     data(TCEReg)
     with(TCEReg, cenken(log(TCEConc), TCECen, PopDensity))
-
     # formula interface
     with(TCEReg, cenken(Cen(log(TCEConc), TCECen)~PopDensity))
 
@@ -87,5 +87,6 @@
     with(DFe, cenxyplot(Year, YearCen, Summer, SummerCen))    # x vs. y
     reg = with(DFe, cenken(Summer, SummerCen, Year, YearCen)) # y~x
     lines(reg)
+    }
 }
 \keyword{regression}

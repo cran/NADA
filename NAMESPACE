@@ -1,3 +1,4 @@
+import("methods")
 import("survival")
 
 importFrom("stats", "sd", "median", "quantile", "residuals", "coef", "cor", "predict")

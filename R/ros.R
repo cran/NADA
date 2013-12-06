@@ -32,11 +32,11 @@ setMethod("ros", signature(obs="numeric", censored="logical"),
         warning("Input > 80% censored -- Results are tenuous.\n")
     }
 
-    ix = obs[censored][which(obs[censored] > max(obs[!censored]))]
+    ix = which(obs > max(obs[!censored]))
     if (length(ix)) {
       warning("Dropped censored values that exceed max of uncensored values.")
-      obs = obs[obs < min(ix)]
-      censored = censored[obs < min(ix)]
+      obs = obs[-ix]
+      censored = censored[-ix]
     } 
 
     ix = order(obs)
