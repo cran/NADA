@@ -3,8 +3,9 @@
 ## Generics
 
 setGeneric("ros", 
-           function(obs, censored, forwardT = "log", reverseT = "exp") 
-             standardGeneric("ros"))
+           function(obs, censored, forwardT = "log", reverseT = "exp", 
+                    na.action=getOption("na.action")) 
+                    standardGeneric("ros"))
 
 ## Classes
 
@@ -14,9 +15,10 @@ setClass("ros", "list")
 
 # ros -- Regression on Order Statistics (ROS).
 # An implementation of ROS for left-censored data (less-thans) 
-# containing one to multiple censoring thresholds. See man page.
+# containing one to multiple censoring thresholds.
 setMethod("ros", signature(obs="numeric", censored="logical"),
-          function(obs, censored, forwardT = "log", reverseT = "exp")
+          function(obs, censored, forwardT = "log", reverseT = "exp",
+                   na.action=getOption("na.action"))
 {
     if (is.null(forwardT) || is.null(reverseT)) {
         forwardT = reverseT = "trueT"
@@ -26,6 +28,12 @@ setMethod("ros", signature(obs="numeric", censored="logical"),
     }
     else if (!exists(reverseT)) {
         stop("Can not find Reverse Transformation function: ", reverseT, "\n")
+    }
+    
+    if (anyNA(obs)||anyNA(censored)) {
+      if (is.null(na.action)) na.action = "na.exclude"
+      obs = do.call(na.action, list(obs))
+      censored = do.call(na.action, list(censored))
     }
 
     if ( (length(obs[censored])/length(obs)) > 0.8 ) {
@@ -43,11 +51,11 @@ setMethod("ros", signature(obs="numeric", censored="logical"),
     obs = obs[ix]
     censored = censored[ix]
 
-    pp = hc.ppoints(obs, censored)
+    pp = hc.ppoints(obs, censored, na.action)
 
     pp.nq = qnorm(pp[!censored])
     obs.transformed = get(forwardT)(obs[!censored])
-    hc = lm(obs.transformed ~ pp.nq)
+    hc = lm(obs.transformed ~ pp.nq, na.action=na.action)
 
     oldClass(hc) = c("ros", "lm")
     hc$obs      = obs
@@ -57,7 +65,7 @@ setMethod("ros", signature(obs="numeric", censored="logical"),
     hc$reverseT = reverseT
     hc$forwardT = forwardT
 
-    hc$modeled[censored] = predict(hc, qnorm(pp[censored]))
+    hc$modeled[censored] = predict(hc, qnorm(pp[censored]), na.action=na.action)
 
     return(hc)
 })
@@ -107,7 +115,7 @@ setMethod("summary", "ros", function(object, plot=FALSE, ...)
     if (plot)
       {
         oldClass(object) = "lm"
-        plot.lm(object, ...)
+        plot(object, ...)
       }
     return(ret)
 })
@@ -145,7 +153,7 @@ setMethod("median", "ros", function(x, na.rm=FALSE) median(x$modeled))
 
 ## Query and prediction functions for ROS objects
 
-setMethod("quantile", signature(x="ros"), function(x, probs=NADAprobs,...)
+setMethod("quantile", signature(x="ros"), function(x, probs=NADAprobs, ...)
 {
     quantile(x$modeled, probs, ...)
 })
@@ -306,23 +314,24 @@ setMethod("boxplot", signature(x="ros"), function(x, ...)
 # If there are no censored values, the plotting postitions are calculated
 # using the standard ppoints() function.
 hc.ppoints = 
-function(obs, censored)
+function(obs, censored, na.action = getOption("na.action"))
 {    
-    if (!is.logical(censored)) 
-      {
-        stop("censored indicator must be logical vector!\n")
-      }
+    if (!is.logical(censored)) stop("censored indicator must be logical vector!\n")
+
+    if (anyNA(obs)||anyNA(censored)) {
+      if (is.null(na.action)) na.action = "na.omit"
+      obs = do.call(na.action, list(obs))
+      censored = do.call(na.action, list(censored))
+    }
 
     pp = numeric(length(obs))
 
     if (!any(censored)) pp = ppoints(obs)
     else
       {
-        #cn = cohn(obs, censored)
-        #pp[!censored] = hc.ppoints.uncen(cn=cn)
-        #pp[censored]  = hc.ppoints.cen(cn=cn)
-        pp[!censored] = hc.ppoints.uncen(obs, censored)
-        pp[censored]  = hc.ppoints.cen(obs, censored)
+        cn = cohn(obs, censored)
+        pp[!censored] = hc.ppoints.uncen(obs, censored, cn, na.action)
+        pp[censored]  = hc.ppoints.cen(obs, censored, cn, na.action)
       }
 
     return(pp)
@@ -339,8 +348,16 @@ function(obs, censored)
 # P_j   = the probability of exceeding the jth threshold
 
 cohn =
-function(obs, censored)
+function(obs, censored, na.action = getOption("na.action"))
 {
+     if (!is.logical(censored)) stop("censored indicator must be logical vector!\n")
+  
+     if (anyNA(obs)||anyNA(censored)) {
+       if (is.null(na.action)) na.action = "na.omit"
+       obs = do.call(na.action, list(obs))
+       censored = do.call(na.action, list(censored))
+     }
+     
      uncen = obs[!censored]
      cen   = obs[censored]
 
@@ -374,11 +391,18 @@ function(obs, censored)
 
 # hc.ppoints.uncen calculates plotting postions for uncensored data.
 hc.ppoints.uncen =
-function(obs, censored, cn)
+function(obs, censored, cn, na.action = getOption("na.action"))
 {
-    #if (missing(cn)) { cn = cohn(obs, censored) }
-    cn = cohn(obs, censored)
-
+    if (!is.logical(censored)) stop("censored indicator must be logical vector!\n")
+    if (anyNA(obs)||anyNA(censored)) {
+      if (is.null(na.action)) na.action = "na.omit"
+      obs = do.call(na.action, list(obs))
+      censored = do.call(na.action, list(censored))
+    }
+    
+    if (missing(cn)) { cn = cohn(obs, censored) }
+    #cn = cohn(obs, censored)
+   
     nonzero = (cn$A != 0)
     A     = cn$A[nonzero]
     B     = cn$B[nonzero]
@@ -404,8 +428,15 @@ function(obs, censored, cn)
 
 # hc.ppoints.cen calculates plotting postions for censored data.
 hc.ppoints.cen =
-function(obs, censored, cn)
-{    
+function(obs, censored, cn, na.action = getOption("na.action"))
+{   
+    if (!is.logical(censored)) stop("censored indicator must be logical vector!\n")
+    if (anyNA(obs)||anyNA(censored)) {
+      if (is.null(na.action)) na.action = "na.omit"
+      obs = do.call(na.action, list(obs))
+      censored = do.call(na.action, list(censored))
+    }
+  
     if (missing(cn)) { cn = cohn(obs, censored) }
 
     C     = cn$C

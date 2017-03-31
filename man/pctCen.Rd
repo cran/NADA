@@ -5,7 +5,7 @@
     \code{pctCen} is a simple, but convenient, function that calculates
     the percentage of censored values.  
 } 
-\usage{pctCen(obs, censored)} 
+\usage{pctCen(obs, censored, na.action)} 
 \arguments{
         \item{obs}{
             A numeric vector of observations.  This includes both censored
@@ -15,6 +15,13 @@
             A logical vector indicating TRUE where an observation in v is
 	        censored (a less-than value) and FALSE otherwise.
         } 
+        \item{na.action}{
+              A function which indicates what should happen
+              when the data contain \code{NA}s.  The default is set by
+              the \code{na.action} setting of \code{\link{options}}, and is
+              \code{\link{na.omit}} if that is unset.  
+              Another possible value is \code{NULL}, no action. 
+        }
 } 
 \details{
     100*(length(obs[censored])/length(obs))
@@ -26,7 +33,7 @@
     the percentage of values censored in the ``obs" vector.
 } 
 \author{
-    Lopaka Lee <llee@usgs.gov>
+    R. Lopaka Lee <rclee@usgs.gov>
 
     Dennis Helsel <dhelsel@practicalstats.com>
 } 

@@ -11,11 +11,11 @@
     values.
 
 } 
-\usage{ ros(obs, censored, forwardT="log", reverseT="exp")} 
+\usage{ ros(obs, censored, forwardT="log", reverseT="exp", na.action)} 
 \arguments{
         \item{obs}{
             A numeric vector of observations.  This includes both censored
-	        and uncensored observations.
+	          and uncensored observations.
         } 
         \item{censored}{
 	    A logical vector indicating TRUE where an observation in
@@ -29,7 +29,13 @@
 	        A name of a function to use for reversing the transformation
 	        after performing the ROS fit. Defaults to \code{exp}.
         }
-
+        \item{na.action}{
+          A function which indicates what should happen
+          when the data contain \code{NA}s.  The default is set by
+          the \code{na.action} setting of \code{\link{options}}, and is
+          \code{\link{na.omit}} if that is unset.  
+          Another possible value is \code{NULL}, no action. 
+        }
 } 
 \details{
     By default, \code{ros} performs a log transformation prior to, and after
@@ -85,7 +91,7 @@
     Research vol. 24, no. 12, pp.1997-2004 
 } 
 \author{
-    Lopaka Lee <llee@usgs.gov>
+    R. Lopaka Lee <rclee@usgs.gov>
 
     Dennis Helsel <dhelsel@practicalstats.com>
 } 

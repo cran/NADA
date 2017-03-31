@@ -88,7 +88,7 @@ Helsel, Dennis R. (2005).  Nondectects and Data Analysis; Statistics for
 censored environmental data.  John Wiley and Sons, USA, NJ.
 }
 \author{
-    Lopaka Lee <llee@usgs.gov>
+    R. Lopaka Lee <rclee@usgs.gov>
 
     Dennis Helsel <dhelsel@practicalstats.com>
 } 

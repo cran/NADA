@@ -7,11 +7,11 @@
 }
 \usage{
 trueT(x)
-cohn(obs, censored)
+cohn(obs, censored, na.action)
 }
 
 \details{
-  These are not to be called by the user.
+  These usually are not called by the user unless checking the implementation.
 }
 \keyword{internal}
 

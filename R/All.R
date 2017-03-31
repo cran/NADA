@@ -1,26 +1,3 @@
-###
-# NADA for R by Lopaka Lee.
-#
-# Version 1.3-0
-# Copyright (2004, 2005, 2006) Lopaka Lee
-#
-# A S-language software module based on 
-# methodologies described by Dennis R. Helsel in his book 
-# Nondetects and Data Analysis: Statistics for Censored Environmental Data.
-#
-# NADA is free software; you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free
-# Software Foundation; either version 2 of the License, or (at your option)
-# any later version.
-# 
-# NADA is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.  You should have received a copy of the GNU General
-# Public License along with NADA; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-###
-
 ### Definitions common to All sections in this package
 
 ## Globals
@@ -140,9 +117,13 @@ function(v, qual.symbol = "<")
 
 ## pctCen -- Simple function to save some typing
 pctCen =
-function(obs, censored)
+function(obs, censored, na.action=getOption("na.action"))
 {
     if (!is.logical(censored)) stop("censored must be logical vector!\n")
+
+    if (is.null(na.action)) na.action = "na.omit"
+    obs = do.call(na.action, list(obs))
+    censored = do.call(na.action, list(censored))
 
     return(100*(length(obs[censored])/length(obs)))
 }

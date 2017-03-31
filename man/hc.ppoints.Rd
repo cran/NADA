@@ -7,23 +7,30 @@
     Helsel-Cohn style plotting positions for multiply-censored data.
 }
 \usage{
-    hc.ppoints(obs, censored)
-    hc.ppoints.uncen(obs, censored, cn)
-    hc.ppoints.cen(obs, censored, cn)
+    hc.ppoints(obs, censored, na.action)
+    hc.ppoints.uncen(obs, censored, cn, na.action)
+    hc.ppoints.cen(obs, censored, cn, na.action)
 }
 \arguments{
         \item{obs}{
             A numeric vector of observations.  This includes both censored
-	        and uncensored observations.
+	          and uncensored observations.
         } 
         \item{censored}{
             A logical vector indicating TRUE where an observation in v is
-	        censored (a less-than value) and FALSE otherwise.
+	          censored (a less-than value) and FALSE otherwise.
         }
         \item{cn}{
             An optional argument for internal-code use only.
             cn = a Cohn Numbers list (quantities described by 
             Helsel and Cohn (1988) in their formulation of the problem).
+        }
+        \item{na.action}{
+            A function which indicates what should happen
+            when the data contain \code{NA}s.  The default is set by
+            the \code{na.action} setting of \code{\link{options}}, and is
+            \code{\link{na.omit}} if that is unset.  
+            Another possible value is \code{NULL}, no action. 
         }
 } 
 \details{
@@ -70,7 +77,7 @@
     vol. 23, no. 4, pp. 715-727.
 } 
 \author{
-    Lopaka Lee <llee@usgs.gov>
+    R. Lopaka Lee <rclee@usgs.gov>
 
     Dennis Helsel <dhelsel@practicalstats.com>
 } 

@@ -92,7 +92,7 @@ for censored data.
     Reliability Data.  John Wiley and Sons, USA, NJ.
 }
 \author{
-    Lopaka Lee <llee@usgs.gov>
+    R. Lopaka Lee <rclee@usgs.gov>
 
     Dennis Helsel <dhelsel@practicalstats.com>
 } 

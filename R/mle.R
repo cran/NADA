@@ -123,7 +123,7 @@ setMethod("quantile", signature(x="cenmle-lognormal"),
       {
         ret = qhat
         names(ret) = 
-          paste(formatC(100 * q, format = "fg", wid = 1), "%", sep='')
+          paste(formatC(100 * q, format = "fg", width = 1), "%", sep='')
       }
     else
       {
